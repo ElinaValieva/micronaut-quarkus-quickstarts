@@ -8,7 +8,7 @@ class GreetingController {
 
     @Get(uris = ["/hello/{name}", "/greeting/{name}"])
     fun greeting(name: String): String {
-        return "Hello from Micronaut $name"
+        return "Hello from Micronaut $name!"
     }
 
     @Get(uris = ["/hello", "/greeting"])

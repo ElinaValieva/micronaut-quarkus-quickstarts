@@ -12,9 +12,14 @@ object GreetingControllerSpec : Spek({
         val embeddedServer: EmbeddedServer = ApplicationContext.run(EmbeddedServer::class.java)
         val client: HttpClient = HttpClient.create(embeddedServer.url)
 
-        it("test /hello responds Hello World") {
+        it("test /hello responds from Micronaut!") {
             val rsp: String = client.toBlocking().retrieve("/hello")
             assertEquals("Hello from Micronaut!", rsp)
+        }
+
+        it("test /hello/user responds from Micronaut!") {
+            val rsp: String = client.toBlocking().retrieve("/hello/user")
+            assertEquals("Hello from Micronaut user!", rsp)
         }
 
         afterGroup {
