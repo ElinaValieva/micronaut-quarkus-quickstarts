@@ -10,7 +10,6 @@ plugins {
 version "0.1"
 group "com.micronaut"
 
-
 repositories {
     jcenter()
 }
@@ -79,6 +78,16 @@ compileTestKotlin {
 
 shadowJar {
     mergeServiceFiles()
+}
+
+jib {
+    to {
+        image = 'elvaliev/micronaut-quickstart'
+        auth {
+            username = DOCKERHUB_USERNAME
+            password = DOCKERHUB_PASSWORD
+        }
+    }
 }
 
 run.classpath += configurations.developmentOnly
