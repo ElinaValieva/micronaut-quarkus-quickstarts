@@ -1,3 +1,14 @@
+buildscript {
+    repositories {
+        jcenter()      // Bintray's repository - a fast Maven Central mirror & more
+        mavenCentral()
+    }
+
+    dependencies {
+        classpath 'com.google.cloud.tools:appengine-gradle-plugin:2.2.0' // Latest 1.x.x release
+    }
+}
+
 plugins {
     id "org.jetbrains.kotlin.jvm" version "1.3.72"
     id "org.jetbrains.kotlin.kapt" version "1.3.72"
@@ -9,6 +20,7 @@ plugins {
 
 version "0.1"
 group "com.micronaut"
+
 
 repositories {
     jcenter()
@@ -50,11 +62,30 @@ dependencies {
 }
 
 test.classpath += configurations.developmentOnly
-
-mainClassName = "example.micronaut.Application"
+mainClassName = "com.micronaut.Application"
 
 test {
     useJUnitPlatform()
+}
+
+apply plugin: "com.google.cloud.tools.appengine-appyaml"
+//
+appengine {
+    stage.artifact =
+            "${buildDir}/libs/${project.name}-${project.version}.jar"
+
+    /**
+     *  stopPreviousVersion = true  -  default - stop the current version
+     *  promote = true              - default - & make this the current version
+     *
+     */
+    deploy {   // deploy configuration
+        stopPreviousVersion = true
+        promote = true
+        projectId = GCLOUD_CONFIG
+        version = GCLOUD_CONFIG
+    }
+
 }
 
 allOpen {
@@ -88,6 +119,15 @@ jib {
             password = DOCKERHUB_PASSWORD
         }
     }
+}
+
+jar {
+    manifest {
+        attributes(
+                'Main-Class': 'com.micronaut.Application'
+        )
+    }
+    from { configurations.compileClasspath.collect { it.isDirectory() ? it : zipTree(it) } }
 }
 
 run.classpath += configurations.developmentOnly
