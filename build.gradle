@@ -83,7 +83,7 @@ appengine {
         stopPreviousVersion = true
         promote = true
         projectId = GCLOUD_CONFIG
-        version = GCLOUD_VERSION
+        version = GCLOUD_CONFIG
     }
 
 }
