@@ -140,16 +140,12 @@ tasks.register('deployOpenshift') {
     description = 'OpenShift Deployment'
 
     doLast {
-        if (Os.isFamily(Os.FAMILY_WINDOWS)) {
-            exec {
-                workingDir('src/main/openshift')
+        exec {
+            workingDir('src/main/openshift')
+            if (Os.isFamily(Os.FAMILY_WINDOWS))
                 commandLine 'cmd', '/c', 'create.bat'
-            }
-        } else {
-            exec {
-                workingDir('src/main/openshift')
+            else
                 commandLine './create.sh'
-            }
         }
     }
 }
@@ -159,16 +155,12 @@ tasks.register('redeployOpenshift') {
     description = 'OpenShift Redeployment'
 
     doLast {
-        if (Os.isFamily(Os.FAMILY_WINDOWS)) {
-            exec {
-                workingDir('src/main/openshift')
+        exec {
+            workingDir('src/main/openshift')
+            if (Os.isFamily(Os.FAMILY_WINDOWS))
                 commandLine 'cmd', '/c', 'deploy.bat'
-            }
-        } else {
-            exec {
-                workingDir('src/main/openshift')
+            else
                 commandLine './deploy.sh'
-            }
         }
     }
 }
@@ -178,16 +170,12 @@ tasks.register('deployKubernetes') {
     description = 'Kubernates Deployment'
 
     doLast {
-        if (Os.isFamily(Os.FAMILY_WINDOWS)) {
-            exec {
-                workingDir('src/main/kubernetes')
+        exec {
+            workingDir('src/main/kubernetes')
+            if (Os.isFamily(Os.FAMILY_WINDOWS))
                 commandLine 'cmd', '/c', 'create.bat'
-            }
-        } else {
-            exec {
-                workingDir('src/main/kubernetes')
+            else
                 commandLine './create.sh'
-            }
         }
     }
 }
@@ -197,17 +185,12 @@ tasks.register('redeployKubernates') {
     description = 'Kubernates Redeployment'
 
     doLast {
-        if (Os.isFamily(Os.FAMILY_WINDOWS)) {
-            exec {
-                workingDir('src/main/kubernetes')
+        exec {
+            workingDir('src/main/kubernetes')
+            if (Os.isFamily(Os.FAMILY_WINDOWS))
                 commandLine 'cmd', '/c', 'deploy.bat'
-            }
-        } else {
-            exec {
-                workingDir('src/main/kubernetes')
+            else
                 commandLine './deploy.sh'
-            }
         }
     }
 }
-
