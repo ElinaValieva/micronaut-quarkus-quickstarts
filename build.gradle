@@ -1,3 +1,5 @@
+import org.apache.tools.ant.taskdefs.condition.Os
+
 buildscript {
     repositories {
         jcenter()      // Bintray's repository - a fast Maven Central mirror & more
@@ -132,3 +134,80 @@ jar {
 
 run.classpath += configurations.developmentOnly
 run.jvmArgs('-noverify', '-XX:TieredStopAtLevel=1', '-Dcom.sun.management.jmxremote')
+
+tasks.register('deployOpenshift') {
+    group = 'deployment'
+    description = 'OpenShift Deployment'
+
+    doLast {
+        if (Os.isFamily(Os.FAMILY_WINDOWS)) {
+            exec {
+                workingDir('src/main/openshift')
+                commandLine 'cmd', '/c', 'create.bat'
+            }
+        } else {
+            exec {
+                workingDir('src/main/openshift')
+                commandLine './create.sh'
+            }
+        }
+    }
+}
+
+tasks.register('redeployOpenshift') {
+    group = 'deployment'
+    description = 'OpenShift Redeployment'
+
+    doLast {
+        if (Os.isFamily(Os.FAMILY_WINDOWS)) {
+            exec {
+                workingDir('src/main/openshift')
+                commandLine 'cmd', '/c', 'deploy.bat'
+            }
+        } else {
+            exec {
+                workingDir('src/main/openshift')
+                commandLine './deploy.sh'
+            }
+        }
+    }
+}
+
+tasks.register('deployKubernetes') {
+    group = 'deployment'
+    description = 'Kubernates Deployment'
+
+    doLast {
+        if (Os.isFamily(Os.FAMILY_WINDOWS)) {
+            exec {
+                workingDir('src/main/kubernetes')
+                commandLine 'cmd', '/c', 'create.bat'
+            }
+        } else {
+            exec {
+                workingDir('src/main/kubernetes')
+                commandLine './create.sh'
+            }
+        }
+    }
+}
+
+tasks.register('redeployKubernates') {
+    group = 'deployment'
+    description = 'Kubernates Redeployment'
+
+    doLast {
+        if (Os.isFamily(Os.FAMILY_WINDOWS)) {
+            exec {
+                workingDir('src/main/kubernetes')
+                commandLine 'cmd', '/c', 'deploy.bat'
+            }
+        } else {
+            exec {
+                workingDir('src/main/kubernetes')
+                commandLine './deploy.sh'
+            }
+        }
+    }
+}
+
