@@ -1,11 +1,13 @@
+import org.apache.tools.ant.taskdefs.condition.Os
+
 buildscript {
     repositories {
-        jcenter()      // Bintray's repository - a fast Maven Central mirror & more
+        jcenter()
         mavenCentral()
     }
 
     dependencies {
-        classpath 'com.google.cloud.tools:appengine-gradle-plugin:2.2.0' // Latest 1.x.x release
+        classpath 'com.google.cloud.tools:appengine-gradle-plugin:2.2.0'
     }
 }
 
@@ -18,7 +20,7 @@ plugins {
     id 'com.google.cloud.tools.jib' version '2.3.0'
 }
 
-version "0.1"
+version "1.0.0"
 group "com.micronaut"
 
 
@@ -27,7 +29,6 @@ repositories {
 }
 
 configurations {
-    // for dependencies that are needed for development only
     developmentOnly
 }
 
@@ -69,7 +70,7 @@ test {
 }
 
 apply plugin: "com.google.cloud.tools.appengine-appyaml"
-//
+
 appengine {
     stage.artifact =
             "${buildDir}/libs/${project.name}-${project.version}.jar"
@@ -79,7 +80,7 @@ appengine {
      *  promote = true              - default - & make this the current version
      *
      */
-    deploy {   // deploy configuration
+    deploy {
         stopPreviousVersion = true
         promote = true
         projectId = GCLOUD_CONFIG
@@ -95,7 +96,6 @@ allOpen {
 compileKotlin {
     kotlinOptions {
         jvmTarget = '1.8'
-        //Will retain parameter names for Java reflection
         javaParameters = true
     }
 }
@@ -132,3 +132,63 @@ jar {
 
 run.classpath += configurations.developmentOnly
 run.jvmArgs('-noverify', '-XX:TieredStopAtLevel=1', '-Dcom.sun.management.jmxremote')
+
+tasks.register('deployOpenshift') {
+    group = 'deployment'
+    description = 'OpenShift Deployment'
+
+    doLast {
+        exec {
+            workingDir('src/main/openshift')
+            if (Os.isFamily(Os.FAMILY_WINDOWS))
+                commandLine 'cmd', '/c', 'create.bat'
+            else
+                commandLine './create'
+        }
+    }
+}
+
+tasks.register('redeployOpenshift') {
+    group = 'deployment'
+    description = 'OpenShift Redeployment'
+
+    doLast {
+        exec {
+            workingDir('src/main/openshift')
+            if (Os.isFamily(Os.FAMILY_WINDOWS))
+                commandLine 'cmd', '/c', 'deploy.bat'
+            else
+                commandLine './deploy'
+        }
+    }
+}
+
+tasks.register('deployKubernetes') {
+    group = 'deployment'
+    description = 'Kubernates Deployment'
+
+    doLast {
+        exec {
+            workingDir('src/main/kubernetes')
+            if (Os.isFamily(Os.FAMILY_WINDOWS))
+                commandLine 'cmd', '/c', 'create.bat'
+            else
+                commandLine './create'
+        }
+    }
+}
+
+tasks.register('redeployKubernates') {
+    group = 'deployment'
+    description = 'Kubernates Redeployment'
+
+    doLast {
+        exec {
+            workingDir('src/main/kubernetes')
+            if (Os.isFamily(Os.FAMILY_WINDOWS))
+                commandLine 'cmd', '/c', 'deploy.bat'
+            else
+                commandLine './deploy'
+        }
+    }
+}
