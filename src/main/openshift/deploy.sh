@@ -1,2 +1,2 @@
 #!/usr/bin/env bash
-echo 'Hello from Openshift deploy'
+oc tag elvaliev/micronaut-quickstart micronaut-quickstart:latest

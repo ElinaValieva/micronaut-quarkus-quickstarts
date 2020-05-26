@@ -4,31 +4,31 @@ kind: "ServiceAccount"
 metadata:
   annotations:
     app.quarkus.io/build-timestamp: "2020-05-26 - 07:57:17 +0000"
-    app: "micronaut-example"
+    app: "micronaut-quickstart"
   labels:
-    app.kubernetes.io/name: "micronaut-example"
+    app.kubernetes.io/name: "micronaut-quickstart"
     app.kubernetes.io/version: "1.0.0"
     app.openshift.io/runtime: "quarkus"
-  name: "micronaut-example"
+  name: "micronaut-quickstart"
 ---
 apiVersion: "v1"
 kind: "Service"
 metadata:
   annotations:
     app.quarkus.io/build-timestamp: "2020-05-26 - 07:57:17 +0000"
-    app: "micronaut-example"
+    app: "micronaut-quickstart"
   labels:
-    app.kubernetes.io/name: "micronaut-example"
+    app.kubernetes.io/name: "micronaut-quickstart"
     app.kubernetes.io/version: "1.0.0"
     app.openshift.io/runtime: "quarkus"
-  name: "micronaut-example"
+  name: "micronaut-quickstart"
 spec:
   ports:
-  - name: "http"
-    port: 8090
-    targetPort: 8090
+    - name: "http"
+      port: 8090
+      targetPort: 8090
   selector:
-    app.kubernetes.io/name: "micronaut-example"
+    app.kubernetes.io/name: "micronaut-quickstart"
     app.kubernetes.io/version: "1.0.0"
   type: "ClusterIP"
 ---
@@ -37,31 +37,31 @@ kind: "RoleBinding"
 metadata:
   annotations:
     app.quarkus.io/build-timestamp: "2020-05-26 - 07:57:17 +0000"
-    app: "micronaut-example"
+    app: "micronaut-quickstart"
   labels:
-    app.kubernetes.io/name: "micronaut-example"
+    app.kubernetes.io/name: "micronaut-quickstart"
     app.kubernetes.io/version: "1.0.0"
     app.openshift.io/runtime: "quarkus"
-  name: "micronaut-example:view"
+  name: "micronaut-quickstart:view"
 roleRef:
   kind: "ClusterRole"
   apiGroup: "rbac.authorization.k8s.io"
   name: "view"
 subjects:
-- kind: "ServiceAccount"
-  name: "micronaut-example"
+  - kind: "ServiceAccount"
+    name: "micronaut-quickstart"
 ---
 apiVersion: "image.openshift.io/v1"
 kind: "ImageStream"
 metadata:
   annotations:
     app.quarkus.io/build-timestamp: "2020-05-26 - 07:57:17 +0000"
-    app: "micronaut-example"
+    app: "micronaut-quickstart"
   labels:
-    app.kubernetes.io/name: "micronaut-example"
+    app.kubernetes.io/name: "micronaut-quickstart"
     app.kubernetes.io/version: "1.0.0"
     app.openshift.io/runtime: "quarkus"
-  name: "micronaut-example"
+  name: "micronaut-quickstart"
 spec: {}
 ---
 apiVersion: "image.openshift.io/v1"
@@ -69,9 +69,9 @@ kind: "ImageStream"
 metadata:
   annotations:
     app.quarkus.io/build-timestamp: "2020-05-26 - 07:57:17 +0000"
-    app: "micronaut-example"
+    app: "micronaut-quickstart"
   labels:
-    app.kubernetes.io/name: "micronaut-example"
+    app.kubernetes.io/name: "micronaut-quickstart"
     app.kubernetes.io/version: "1.0.0"
     app.openshift.io/runtime: "quarkus"
   name: "s2i-java"
@@ -83,17 +83,17 @@ kind: "BuildConfig"
 metadata:
   annotations:
     app.quarkus.io/build-timestamp: "2020-05-26 - 07:57:17 +0000"
-    app: "micronaut-example"
+    app: "micronaut-quickstart"
   labels:
-    app.kubernetes.io/name: "micronaut-example"
+    app.kubernetes.io/name: "micronaut-quickstart"
     app.kubernetes.io/version: "1.0.0"
     app.openshift.io/runtime: "quarkus"
-  name: "micronaut-example"
+  name: "micronaut-quickstart"
 spec:
   output:
     to:
       kind: "ImageStreamTag"
-      name: "micronaut-example:1.0.0"
+      name: "micronaut-quickstart:1.0.0"
   source:
     binary: {}
   strategy:
@@ -107,47 +107,47 @@ kind: "DeploymentConfig"
 metadata:
   annotations:
     app.quarkus.io/build-timestamp: "2020-05-26 - 07:57:17 +0000"
-    app: "micronaut-example"
+    app: "micronaut-quickstart"
   labels:
-    app.kubernetes.io/name: "micronaut-example"
+    app.kubernetes.io/name: "micronaut-quickstart"
     app.kubernetes.io/version: "1.0.0"
     app.openshift.io/runtime: "quarkus"
-  name: "micronaut-example"
+  name: "micronaut-quickstart"
 spec:
   replicas: 1
   selector:
-    app.kubernetes.io/name: "micronaut-example"
+    app.kubernetes.io/name: "micronaut-quickstart"
     app.kubernetes.io/version: "1.0.0"
   template:
     metadata:
       annotations:
         app.quarkus.io/build-timestamp: "2020-05-26 - 07:57:17 +0000"
-        app: "micronaut-example"
+        app: "micronaut-quickstart"
       labels:
-        app.kubernetes.io/name: "micronaut-example"
+        app.kubernetes.io/name: "micronaut-quickstart"
         app.kubernetes.io/version: "1.0.0"
         app.openshift.io/runtime: "quarkus"
     spec:
       containers:
-      - env:
-        - name: "KUBERNETES_NAMESPACE"
-          valueFrom:
-            fieldRef:
-              fieldPath: "metadata.namespace"
-        image: "elvaliev/micronaut-example:latest"
-        imagePullPolicy: "Always"
-        name: "micronaut-example"
-        ports:
-        - containerPort: 8090
-          name: "http"
-          protocol: "TCP"
-      serviceAccount: "micronaut-example"
+        - env:
+            - name: "KUBERNETES_NAMESPACE"
+              valueFrom:
+                fieldRef:
+                  fieldPath: "metadata.namespace"
+          image: "elvaliev/micronaut-quickstart:latest"
+          imagePullPolicy: "Always"
+          name: "micronaut-quickstart"
+          ports:
+            - containerPort: 8090
+              name: "http"
+              protocol: "TCP"
+      serviceAccount: "micronaut-quickstart"
   triggers:
-  - imageChangeParams:
-      automatic: true
-      containerNames:
-      - "micronaut-example"
-      from:
-        kind: "ImageStreamTag"
-        name: "micronaut-example:latest"
-    type: "ImageChange"
+    - imageChangeParams:
+        automatic: true
+        containerNames:
+          - "micronaut-quickstart"
+        from:
+          kind: "ImageStreamTag"
+          name: "micronaut-quickstart:latest"
+      type: "ImageChange"

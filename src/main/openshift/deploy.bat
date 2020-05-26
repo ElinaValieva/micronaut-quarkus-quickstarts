@@ -1,1 +1,1 @@
-echo 'Hello world deploy redep op'
+oc tag elvaliev/micronaut-quickstart micronaut-quickstart:latest
