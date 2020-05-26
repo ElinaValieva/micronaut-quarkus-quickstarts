@@ -4,29 +4,29 @@ kind: "ServiceAccount"
 metadata:
   annotations:
     app.quarkus.io/build-timestamp: "2020-05-26 - 07:57:17 +0000"
-    app: "micronaut-example"
+    app: "micronaut-quickstart"
   labels:
-    app.kubernetes.io/name: "micronaut-example"
+    app.kubernetes.io/name: "micronaut-quickstart"
     app.kubernetes.io/version: "1.0.0"
-  name: "micronaut-example"
+  name: "micronaut-quickstart"
 ---
 apiVersion: "v1"
 kind: "Service"
 metadata:
   annotations:
     app.quarkus.io/build-timestamp: "2020-05-26 - 07:57:17 +0000"
-    app: "micronaut-example"
+    app: "micronaut-quickstart"
   labels:
-    app.kubernetes.io/name: "micronaut-example"
+    app.kubernetes.io/name: "micronaut-quickstart"
     app.kubernetes.io/version: "1.0.0"
-  name: "micronaut-example"
+  name: "micronaut-quickstart"
 spec:
   ports:
   - name: "http"
     port: 8090
     targetPort: 8090
   selector:
-    app.kubernetes.io/name: "micronaut-example"
+    app.kubernetes.io/name: "micronaut-quickstart"
     app.kubernetes.io/version: "1.0.0"
   type: "ClusterIP"
 ---
@@ -35,42 +35,42 @@ kind: "RoleBinding"
 metadata:
   annotations:
     app.quarkus.io/build-timestamp: "2020-05-26 - 07:57:17 +0000"
-    app: "micronaut-example"
+    app: "micronaut-quickstart"
   labels:
-    app.kubernetes.io/name: "micronaut-example"
+    app.kubernetes.io/name: "micronaut-quickstart"
     app.kubernetes.io/version: "1.0.0"
-  name: "micronaut-example:view"
+  name: "micronaut-quickstart:view"
 roleRef:
   kind: "ClusterRole"
   apiGroup: "rbac.authorization.k8s.io"
   name: "view"
 subjects:
 - kind: "ServiceAccount"
-  name: "micronaut-example"
+  name: "micronaut-quickstart"
 ---
 apiVersion: "apps/v1"
 kind: "Deployment"
 metadata:
   annotations:
     app.quarkus.io/build-timestamp: "2020-05-26 - 07:57:17 +0000"
-    app: "micronaut-example"
+    app: "micronaut-quickstart"
   labels:
-    app.kubernetes.io/name: "micronaut-example"
+    app.kubernetes.io/name: "micronaut-quickstart"
     app.kubernetes.io/version: "1.0.0"
-  name: "micronaut-example"
+  name: "micronaut-quickstart"
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app.kubernetes.io/name: "micronaut-example"
+      app.kubernetes.io/name: "micronaut-quickstart"
       app.kubernetes.io/version: "1.0.0"
   template:
     metadata:
       annotations:
         app.quarkus.io/build-timestamp: "2020-05-26 - 07:57:17 +0000"
-        app: "micronaut-example"
+        app: "micronaut-quickstart"
       labels:
-        app.kubernetes.io/name: "micronaut-example"
+        app.kubernetes.io/name: "micronaut-quickstart"
         app.kubernetes.io/version: "1.0.0"
     spec:
       containers:
@@ -81,9 +81,9 @@ spec:
               fieldPath: "metadata.namespace"
         image: "elvaliev/micronaut-quickstart:latest"
         imagePullPolicy: "Always"
-        name: "micronaut-example"
+        name: "micronaut-quickstart"
         ports:
         - containerPort: 8090
           name: "http"
           protocol: "TCP"
-      serviceAccount: "micronaut-example"
+      serviceAccount: "micronaut-quickstart"

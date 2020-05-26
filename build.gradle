@@ -2,12 +2,12 @@ import org.apache.tools.ant.taskdefs.condition.Os
 
 buildscript {
     repositories {
-        jcenter()      // Bintray's repository - a fast Maven Central mirror & more
+        jcenter()
         mavenCentral()
     }
 
     dependencies {
-        classpath 'com.google.cloud.tools:appengine-gradle-plugin:2.2.0' // Latest 1.x.x release
+        classpath 'com.google.cloud.tools:appengine-gradle-plugin:2.2.0'
     }
 }
 
@@ -29,7 +29,6 @@ repositories {
 }
 
 configurations {
-    // for dependencies that are needed for development only
     developmentOnly
 }
 
@@ -71,7 +70,7 @@ test {
 }
 
 apply plugin: "com.google.cloud.tools.appengine-appyaml"
-//
+
 appengine {
     stage.artifact =
             "${buildDir}/libs/${project.name}-${project.version}.jar"
@@ -81,7 +80,7 @@ appengine {
      *  promote = true              - default - & make this the current version
      *
      */
-    deploy {   // deploy configuration
+    deploy {
         stopPreviousVersion = true
         promote = true
         projectId = GCLOUD_CONFIG
@@ -97,7 +96,6 @@ allOpen {
 compileKotlin {
     kotlinOptions {
         jvmTarget = '1.8'
-        //Will retain parameter names for Java reflection
         javaParameters = true
     }
 }
@@ -145,7 +143,7 @@ tasks.register('deployOpenshift') {
             if (Os.isFamily(Os.FAMILY_WINDOWS))
                 commandLine 'cmd', '/c', 'create.bat'
             else
-                commandLine './create.sh'
+                commandLine './create'
         }
     }
 }
@@ -160,7 +158,7 @@ tasks.register('redeployOpenshift') {
             if (Os.isFamily(Os.FAMILY_WINDOWS))
                 commandLine 'cmd', '/c', 'deploy.bat'
             else
-                commandLine './deploy.sh'
+                commandLine './deploy'
         }
     }
 }
@@ -175,7 +173,7 @@ tasks.register('deployKubernetes') {
             if (Os.isFamily(Os.FAMILY_WINDOWS))
                 commandLine 'cmd', '/c', 'create.bat'
             else
-                commandLine './create.sh'
+                commandLine './create'
         }
     }
 }
@@ -190,7 +188,7 @@ tasks.register('redeployKubernates') {
             if (Os.isFamily(Os.FAMILY_WINDOWS))
                 commandLine 'cmd', '/c', 'deploy.bat'
             else
-                commandLine './deploy.sh'
+                commandLine './deploy'
         }
     }
 }
