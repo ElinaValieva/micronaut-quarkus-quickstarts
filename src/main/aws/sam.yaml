@@ -1,6 +1,6 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Transform: AWS::Serverless-2016-10-31
-Description: AWS Serverless Micronaut API - example.micronaut::prime-finder
+Description: AWS Serverless Micronaut API - com.micronaut::micronaut-quickstart
 Globals:
   Api:
     EndpointConfiguration: REGIONAL
@@ -24,6 +24,6 @@ Resources:
 Outputs:
   MyServiceApi:
     Description: URL for application
-    Value: !Sub 'https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/find-primes-below/{number}'
+    Value: !Sub 'https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/hello/{aws}'
     Export:
-      Name: MicronautPrimeFinder
+      Name: MicronautHelloStream

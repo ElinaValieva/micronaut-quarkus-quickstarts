@@ -1,9 +1,9 @@
 #!/bin/bash
 if [ ! "${1}" == "skip-build" ]; then
   echo "Building the function.zip..."
-  docker build . -t prime-finder
+  docker build . -t micronaut-quickstart
   mkdir -p build
-  docker run --rm --entrypoint cat prime-finder  /home/application/function.zip > build/function.zip
+  docker run --rm --entrypoint cat micronaut-quickstart  /home/application/function.zip > build/function.zip
 fi
 
 # check for role

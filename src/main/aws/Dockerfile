@@ -24,7 +24,7 @@ FROM graalvm
 COPY --from=builder /home/application/ /home/application/
 WORKDIR /home/application
 RUN /usr/lib/graalvm/bin/gu install native-image
-RUN /usr/lib/graalvm/bin/native-image --no-server -cp build/libs/prime-finder-*-all.jar
+RUN /usr/lib/graalvm/bin/native-image --no-server -cp 'build/libs/micronaut-quickstart-1.0.0-all.jar'
 RUN chmod 755 bootstrap
 RUN chmod 755 server
 RUN zip -j function.zip bootstrap server

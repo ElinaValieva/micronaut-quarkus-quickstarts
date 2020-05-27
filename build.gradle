@@ -40,7 +40,9 @@ dependencies {
     implementation "io.micronaut:micronaut-http-client"
     implementation "io.micronaut:micronaut-http-server-netty"
     implementation "javax.annotation:javax.annotation-api"
-    implementation "io.micronaut.aws:micronaut-function-aws-api-proxy"
+    implementation("io.micronaut.aws:micronaut-function-aws-custom-runtime") {
+        exclude group: "com.fasterxml.jackson.module", module: "jackson-module-afterburner"
+    }
     kapt platform("io.micronaut:micronaut-bom:$micronautVersion")
     kapt "io.micronaut:micronaut-inject-java"
     kapt "io.micronaut:micronaut-validation"
@@ -186,6 +188,34 @@ tasks.register('redeployKubernates') {
     doLast {
         exec {
             workingDir('src/main/kubernetes')
+            if (Os.isFamily(Os.FAMILY_WINDOWS))
+                commandLine 'cmd', '/c', 'deploy.bat'
+            else
+                commandLine './deploy'
+        }
+    }
+}
+tasks.register('runAWS') {
+    group = 'deployment'
+    description = 'sam local start-api -t sam.yaml -p 3000'
+
+    doLast {
+        exec {
+            workingDir('src/main/aws')
+            if (Os.isFamily(Os.FAMILY_WINDOWS))
+                commandLine 'cmd', '/c', 'sam_local.bat'
+            else
+                commandLine './sam_local'
+        }
+    }
+}
+tasks.register('deployAWS') {
+    group = 'deployment'
+    description = 'sam local start-api -t sam.yaml -p 3000'
+
+    doLast {
+        exec {
+            workingDir('src/main/aws')
             if (Os.isFamily(Os.FAMILY_WINDOWS))
                 commandLine 'cmd', '/c', 'deploy.bat'
             else
