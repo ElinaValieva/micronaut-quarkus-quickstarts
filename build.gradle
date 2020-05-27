@@ -1,3 +1,7 @@
+import com.amazonaws.services.lambda.model.InvocationType
+import com.amazonaws.services.lambda.model.Runtime
+import jp.classmethod.aws.gradle.lambda.AWSLambdaInvokeTask
+import jp.classmethod.aws.gradle.lambda.AWSLambdaMigrateFunctionTask
 import org.apache.tools.ant.taskdefs.condition.Os
 
 buildscript {
@@ -8,6 +12,7 @@ buildscript {
 
     dependencies {
         classpath 'com.google.cloud.tools:appengine-gradle-plugin:2.2.0'
+        classpath "jp.classmethod.aws:gradle-aws-plugin:0.41"
     }
 }
 
@@ -33,6 +38,7 @@ configurations {
 }
 
 dependencies {
+    implementation "io.micronaut:micronaut-management"
     implementation platform("io.micronaut:micronaut-bom:$micronautVersion")
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:${kotlinVersion}"
     implementation "org.jetbrains.kotlin:kotlin-reflect:${kotlinVersion}"
@@ -195,20 +201,7 @@ tasks.register('redeployKubernates') {
         }
     }
 }
-tasks.register('runAWS') {
-    group = 'deployment'
-    description = 'sam local start-api -t sam.yaml -p 3000'
 
-    doLast {
-        exec {
-            workingDir('src/main/aws')
-            if (Os.isFamily(Os.FAMILY_WINDOWS))
-                commandLine 'cmd', '/c', 'sam_local.bat'
-            else
-                commandLine './sam_local'
-        }
-    }
-}
 tasks.register('deployAWS') {
     group = 'deployment'
     description = 'sam local start-api -t sam.yaml -p 3000'
@@ -221,5 +214,41 @@ tasks.register('deployAWS') {
             else
                 commandLine './deploy'
         }
+    }
+}
+
+apply plugin: 'jp.classmethod.aws.lambda'
+apply plugin: "base"
+
+aws {
+    profileName = "default"
+    region = "ap-northeast-1"
+}
+
+lambda {
+    region = "us-east-1"
+}
+
+task zip(type: Zip) {
+    from "function/"
+    destinationDir file("build")
+}
+
+task deploy(type: AWSLambdaMigrateFunctionTask, dependsOn: shadowJar) {
+    functionName = "hello-micronaut"
+    handler = "io.micronaut.function.aws.MicronautRequestStreamHandler"
+    role = "arn:aws:iam::${aws.accountId}:role/lambda_basic_execution"
+    runtime = Runtime.Java8
+    zipFile = shadowJar.archivePath
+    memorySize = 256
+    timeout = 60
+}
+
+task invoke(type: AWSLambdaInvokeTask) {
+    functionName = "hello-world"
+    invocationType = InvocationType.RequestResponse
+    payload = '{"name":"Fred"}'
+    doLast {
+        println "Lambda function result: " + String(invokeResult.payload.array(), "UTF-8")
     }
 }

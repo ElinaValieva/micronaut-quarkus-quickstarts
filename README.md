@@ -55,16 +55,13 @@ For redeploying application on Kubernetes:
 ```gradle
 ./gradlew redeployKubernetes
 ```
+&nbsp;
 
 ## AWS Lambda 🚩
 **Prerequisites:** `AWS Client` - login with client. 
 
 For creating and deploying on changes application as `Amazom Lambda` prepared platform-independent scripts and application template in `src/main/aws`. These scripts could be used directly or run as a gradle tasks. For [aws function used GraalVM image packaging](https://github.com/micronaut-guides/micronaut-function-graalvm-aws-lambda-gateway). 
 
-For running Lambda Locally via SAM: 
-```gradle
-./gradlew runAws
-```
 Deploying to AWS Lambda: 
 ```gradle
 ./gradlew deployAws
