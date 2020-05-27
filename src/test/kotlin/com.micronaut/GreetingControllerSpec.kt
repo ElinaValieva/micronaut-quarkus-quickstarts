@@ -22,6 +22,16 @@ object GreetingControllerSpec : Spek({
             assertEquals("Hello from Micronaut user!", rsp)
         }
 
+        it("test /greeting responds from Micronaut!") {
+            val rsp: String = client.toBlocking().retrieve("/greeting")
+            assertEquals("Hello from Micronaut!", rsp)
+        }
+
+        it("test /greeting/user responds from Micronaut!") {
+            val rsp: String = client.toBlocking().retrieve("/greeting/user")
+            assertEquals("Hello from Micronaut user!", rsp)
+        }
+
         afterGroup {
             client.close()
             embeddedServer.close()
