@@ -30,40 +30,60 @@ gcloud app browse
 ## OpenShift 🚩
 **Prerequisites:** `OpenShift Client` - login with client. 
 
-For creating and deploying on changes application on `OpenShift` prepared platform-independent scripts and application template in `src/main/openshift`. These scripts could be used directly or run as a gradle tasks.
+For creating and deploying on changes application on `OpenShift` prepared platform-independent scripts and application template in `src/main/openshift`. These scripts could be used directly or run as a gradle tasks (see `openshift` group in gradle tasks).
 
 For creating a new application on Openshift: 
 ```gradle
-./gradle deployOpenshift
+./gradlew openshiftCreate
 ```
 For redeploying application on Openshift: 
 ```gradle
-./gradlew redeployOpenshift
+./gradlew openshiftDeploy
 ```
 &nbsp;
 
 ## Kubernetes 🚩
 **Prerequisites:** `Kubernetes Client` - login with client. 
 
-For creating and deploying on changes application on `Kubernetes` prepared platform-independent scripts and application template in `src/main/kubernetes`. These scripts could be used directly or run as a gradle tasks.
+For creating and deploying on changes application on `Kubernetes` prepared platform-independent scripts and application template in `src/main/kubernetes`. These scripts could be used directly or run as a gradle tasks (see `kubernetes` group in gradle tasks).
 
 For creating a new application on Kubernetes: 
 ```gradle
-./gradle deployKubernetes
+./gradlew kubernetesCreate
 ```
 For redeploying application on Kubernetes: 
 ```gradle
-./gradlew redeployKubernetes
+./gradlew kubernetesDeploy
 ```
 &nbsp;
 
 ## AWS Lambda 🚩
-**Prerequisites:** `AWS Client` - login with client. 
+**Prerequisites:** `AWS Client` - login with client. Two approaches: using [GraalVM image packaging](https://github.com/micronaut-guides/micronaut-function-graalvm-aws-lambda-gateway) and Serverless Functions.
 
-For creating and deploying on changes application as `Amazom Lambda` prepared platform-independent scripts and application template in `src/main/aws`. These scripts could be used directly or run as a gradle tasks. For [aws function used GraalVM image packaging](https://github.com/micronaut-guides/micronaut-function-graalvm-aws-lambda-gateway). 
+### Serverless Functions
+For deploying serverless functions used [gradle plugin](https://github.com/classmethod/gradle-aws-plugin). Define `AWS_ROLE` and `AWS_REGION` in `gradle.properties`. 
+> For using aws funtions necessary to enable parameter `enableAws` as `true` in `gradle.properties` and then run `./gradlew build -PenableAws=true`
 
 Deploying to AWS Lambda: 
 ```gradle
-./gradlew deployAws
+./gradlew deploy
 ```
 
+Invoke Lambda: 
+```gradle
+./gradlew invoke
+```
+
+Delete function:
+```gradle
+./gradlew deleteFunction
+```
+
+Update alias: 
+```gradle
+./gradlew updateAlias
+```
+
+
+### GraalVM image
+For creating and deploying on changes application as `Amazom Lambda` prepared script `deploy.sh` and Dockerfile. Define values in `deploy.sh` for variables `ROLE_NAME` and `S3_BUCKET_NAME` and run script: `sh deploy`
