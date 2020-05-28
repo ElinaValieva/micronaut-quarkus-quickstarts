@@ -46,9 +46,7 @@ dependencies {
     implementation "io.micronaut:micronaut-http-client"
     implementation "io.micronaut:micronaut-http-server-netty"
     implementation "javax.annotation:javax.annotation-api"
-    implementation("io.micronaut.aws:micronaut-function-aws-custom-runtime") {
-        exclude group: "com.fasterxml.jackson.module", module: "jackson-module-afterburner"
-    }
+    implementation "io.micronaut:micronaut-function-aws"
     kapt platform("io.micronaut:micronaut-bom:$micronautVersion")
     kapt "io.micronaut:micronaut-inject-java"
     kapt "io.micronaut:micronaut-validation"
@@ -219,6 +217,7 @@ tasks.register('deployAWS') {
 
 apply plugin: 'jp.classmethod.aws.lambda'
 apply plugin: "base"
+apply plugin: "java"
 
 aws {
     profileName = "default"
@@ -237,18 +236,19 @@ task zip(type: Zip) {
 task deploy(type: AWSLambdaMigrateFunctionTask, dependsOn: shadowJar) {
     functionName = "hello-micronaut"
     handler = "io.micronaut.function.aws.MicronautRequestStreamHandler"
-    role = "arn:aws:iam::${aws.accountId}:role/lambda_basic_execution"
+    role = AWS_ROLE
     runtime = Runtime.Java8
     zipFile = shadowJar.archivePath
     memorySize = 256
     timeout = 60
 }
 
+
 task invoke(type: AWSLambdaInvokeTask) {
-    functionName = "hello-world"
+    functionName = "hello-micronaut"
     invocationType = InvocationType.RequestResponse
-    payload = '{"name":"Fred"}'
+    payload = ''
     doLast {
-        println "Lambda function result: " + String(invokeResult.payload.array(), "UTF-8")
+        println "Lambda function result: " + new String(invokeResult.payload.array())
     }
 }
