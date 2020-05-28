@@ -1,7 +1,6 @@
 import com.amazonaws.services.lambda.model.InvocationType
 import com.amazonaws.services.lambda.model.Runtime
-import jp.classmethod.aws.gradle.lambda.AWSLambdaInvokeTask
-import jp.classmethod.aws.gradle.lambda.AWSLambdaMigrateFunctionTask
+import jp.classmethod.aws.gradle.lambda.*
 import org.apache.tools.ant.taskdefs.condition.Os
 
 buildscript {
@@ -46,9 +45,7 @@ dependencies {
     implementation "io.micronaut:micronaut-http-client"
     implementation "io.micronaut:micronaut-http-server-netty"
     implementation "javax.annotation:javax.annotation-api"
-    implementation("io.micronaut.aws:micronaut-function-aws-custom-runtime") {
-        exclude group: "com.fasterxml.jackson.module", module: "jackson-module-afterburner"
-    }
+    implementation "io.micronaut:micronaut-function-aws"
     kapt platform("io.micronaut:micronaut-bom:$micronautVersion")
     kapt "io.micronaut:micronaut-inject-java"
     kapt "io.micronaut:micronaut-validation"
@@ -142,8 +139,8 @@ jar {
 run.classpath += configurations.developmentOnly
 run.jvmArgs('-noverify', '-XX:TieredStopAtLevel=1', '-Dcom.sun.management.jmxremote')
 
-tasks.register('deployOpenshift') {
-    group = 'deployment'
+tasks.register('openshiftCreate') {
+    group = 'openshift'
     description = 'OpenShift Deployment'
 
     doLast {
@@ -157,8 +154,8 @@ tasks.register('deployOpenshift') {
     }
 }
 
-tasks.register('redeployOpenshift') {
-    group = 'deployment'
+tasks.register('openshiftDeploy') {
+    group = 'openshift'
     description = 'OpenShift Redeployment'
 
     doLast {
@@ -172,8 +169,8 @@ tasks.register('redeployOpenshift') {
     }
 }
 
-tasks.register('deployKubernetes') {
-    group = 'deployment'
+tasks.register('kubernetesCreate') {
+    group = 'kubernetes'
     description = 'Kubernates Deployment'
 
     doLast {
@@ -187,8 +184,8 @@ tasks.register('deployKubernetes') {
     }
 }
 
-tasks.register('redeployKubernates') {
-    group = 'deployment'
+tasks.register('kubernetesDeploy') {
+    group = 'kubernetes'
     description = 'Kubernates Redeployment'
 
     doLast {
@@ -202,53 +199,69 @@ tasks.register('redeployKubernates') {
     }
 }
 
-tasks.register('deployAWS') {
-    group = 'deployment'
-    description = 'sam local start-api -t sam.yaml -p 3000'
+if (project.hasProperty("enableAws") && project.property("enableAws") == "true") {
 
-    doLast {
-        exec {
-            workingDir('src/main/aws')
-            if (Os.isFamily(Os.FAMILY_WINDOWS))
-                commandLine 'cmd', '/c', 'deploy.bat'
-            else
-                commandLine './deploy'
+    apply plugin: 'jp.classmethod.aws.lambda'
+    apply plugin: "base"
+    apply plugin: "java"
+
+    aws {
+        profileName = "default"
+        region = AWS_REGION
+    }
+
+    lambda {
+        region = AWS_REGION
+    }
+
+    task zip(type: Zip) {
+        from "function/"
+        destinationDir file("build")
+    }
+
+    mainClassName = "io.micronaut.function.executor.FunctionApplication"
+
+    task deploy(type: AWSLambdaMigrateFunctionTask, dependsOn: shadowJar) {
+        functionName = "hello-micronaut"
+        handler = "io.micronaut.function.aws.MicronautRequestStreamHandler"
+        role = AWS_ROLE
+        runtime = Runtime.Java8
+        zipFile = shadowJar.archivePath
+        memorySize = 256
+        timeout = 60
+    }
+
+
+    task invoke(type: AWSLambdaInvokeTask) {
+        functionName = "hello-micronaut"
+        invocationType = InvocationType.RequestResponse
+        payload = ''
+        doLast {
+            println "Lambda function result: " + new String(invokeResult.payload.array())
         }
     }
-}
 
-apply plugin: 'jp.classmethod.aws.lambda'
-apply plugin: "base"
+    task deleteFunction(type: AWSLambdaDeleteFunctionTask) {
+        functionName = "hello-micronaut"
+    }
 
-aws {
-    profileName = "default"
-    region = "ap-northeast-1"
-}
+    task publishVersionFunction(type: AWSLambdaPublishVersionTask, dependsOn: deploy) {
+        functionName = "hello-micronaut"
+    }
 
-lambda {
-    region = "us-east-1"
-}
+    task createAlias(type: AWSLambdaCreateAliasTask, dependsOn: publishVersionFunction) {
+        functionName = "hello-micronaut"
+        aliasName = "alias"
+        functionVersion = "1"
+    }
 
-task zip(type: Zip) {
-    from "function/"
-    destinationDir file("build")
-}
-
-task deploy(type: AWSLambdaMigrateFunctionTask, dependsOn: shadowJar) {
-    functionName = "hello-micronaut"
-    handler = "io.micronaut.function.aws.MicronautRequestStreamHandler"
-    role = "arn:aws:iam::${aws.accountId}:role/lambda_basic_execution"
-    runtime = Runtime.Java8
-    zipFile = shadowJar.archivePath
-    memorySize = 256
-    timeout = 60
-}
-
-task invoke(type: AWSLambdaInvokeTask) {
-    functionName = "hello-world"
-    invocationType = InvocationType.RequestResponse
-    payload = '{"name":"Fred"}'
-    doLast {
-        println "Lambda function result: " + String(invokeResult.payload.array(), "UTF-8")
+    task updateAlias(type: AWSLambdaUpdateAliasTask, dependsOn: createAlias) {
+        functionName = "hello-micronaut"
+        aliasName = "alias"
+        functionVersion = "1"
+        routingConfig {
+            additionalVersionWeight = 0.7
+            useNextVersion = true
+        }
     }
 }
