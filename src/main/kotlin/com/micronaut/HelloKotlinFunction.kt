@@ -7,6 +7,6 @@ import java.util.function.Supplier
 class HelloKotlinFunction : Supplier<String> {
 
     override fun get(): String {
-        return "Hello world!"
+        return "Hello from Serverless Micronaut Functions!"
     }
 }
