@@ -1,8 +1,6 @@
 import com.amazonaws.services.lambda.model.InvocationType
 import com.amazonaws.services.lambda.model.Runtime
 import jp.classmethod.aws.gradle.lambda.*
-import org.apache.tools.ant.taskdefs.condition.Os
-import org.gradle.api.plugins.internal.DefaultJavaApplication
 
 buildscript {
     repositories {
@@ -207,114 +205,18 @@ if (project.hasProperty("enableAws") && project.property("enableAws") == "true")
     }
 }
 
-class KubernetesPluginExtension {
-    String path
-    String application
-    String image
-    Integer port
-}
 
-class KubernetesPlugin implements Plugin<Project> {
-
-    void apply(Project project) {
-        def directory = 'kubernetes'
-        def kubernetesExtension = project.extensions.create('kubernetes', KubernetesPluginExtension)
-        def openShiftExtension = project.extensions.create('openshift', KubernetesPluginExtension)
-
-        project.task('deployKubernetes') {
-            group = 'kubernetes'
-            description = 'Kubernates Redeployment'
-            doLast {
-                project.exec {
-                    workingDir("${directory}")
-                    if (Os.isFamily(Os.FAMILY_WINDOWS))
-                        commandLine 'cmd', '/c', "kubernetesDeploy.bat " +
-                                "${kubernetesExtension.application} " +
-                                "${kubernetesExtension.image}"
-                    else
-                        commandLine "./kubernetesDeploy " +
-                                "${kubernetesExtension.application} " +
-                                "${kubernetesExtension.image}"
-                }
-            }
-        }
-
-        project.task('kubernetesCreate') {
-            group = 'kubernetes'
-            description = 'Kubernates Deployment'
-
-            doLast {
-                project.exec {
-                    workingDir("${directory}")
-                    if (Os.isFamily(Os.FAMILY_WINDOWS))
-                        commandLine 'cmd', '/c', "kubernetesCreate.bat " +
-                                "${kubernetesExtension.application} " +
-                                "${kubernetesExtension.image} " +
-                                "${kubernetesExtension.path} " +
-                                "${kubernetesExtension.port}"
-                    else
-                        commandLine "./kubernetesCreate " +
-                                "${kubernetesExtension.application} " +
-                                "${kubernetesExtension.image} " +
-                                "${kubernetesExtension.path} " +
-                                "${kubernetesExtension.port}"
-                }
-            }
-        }
-
-        project.task('openshiftCreate') {
-            group = 'openshift'
-            description = 'OpenShift Deployment'
-
-            doLast {
-                project.exec {
-                    workingDir("${directory}")
-                    if (Os.isFamily(Os.FAMILY_WINDOWS))
-                        commandLine 'cmd', '/c', "openshiftCreate.bat " +
-                                "${openShiftExtension.application} " +
-                                "${openShiftExtension.image} " +
-                                "${openShiftExtension.path}"
-                    else
-                        commandLine "./openshiftCreate " +
-                                "${openShiftExtension.application} " +
-                                "${openShiftExtension.image} " +
-                                "${openShiftExtension.path}"
-                }
-            }
-        }
-
-        project.task('openshiftDeploy') {
-            group = 'openshift'
-            description = 'OpenShift Redeployment'
-
-            doLast {
-                project.exec {
-                    workingDir("${directory}")
-                    if (Os.isFamily(Os.FAMILY_WINDOWS))
-                        commandLine 'cmd', '/c', "openshiftDeploy.bat " +
-                                "${openShiftExtension.application} " +
-                                "${openShiftExtension.image}"
-                    else
-                        commandLine "./openshiftDeploy " +
-                                "${openShiftExtension.application} " +
-                                "${openShiftExtension.image}"
-                }
-            }
-        }
-    }
-}
-
-apply plugin: KubernetesPlugin
+apply from: 'kubernetes.gradle'
 
 kubernetes {
     path = 'templates/kubernetes.yml'
     image = 'elvaliev/micronaut-quickstart'
+    name = 'micronaut-quickstart'
     port = 8090
-    application = 'micronaut-quickstart'
 }
 
 openshift {
     path = 'templates/openshift.yml'
+    name = 'micronaut-quickstart'
     image = 'elvaliev/micronaut-quickstart'
-    application = 'micronaut-quickstart'
 }
