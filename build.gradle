@@ -1,7 +1,6 @@
 import com.amazonaws.services.lambda.model.InvocationType
 import com.amazonaws.services.lambda.model.Runtime
 import jp.classmethod.aws.gradle.lambda.*
-import org.apache.tools.ant.taskdefs.condition.Os
 
 buildscript {
     repositories {
@@ -139,66 +138,6 @@ jar {
 run.classpath += configurations.developmentOnly
 run.jvmArgs('-noverify', '-XX:TieredStopAtLevel=1', '-Dcom.sun.management.jmxremote')
 
-tasks.register('openshiftCreate') {
-    group = 'openshift'
-    description = 'OpenShift Deployment'
-
-    doLast {
-        exec {
-            workingDir('src/main/openshift')
-            if (Os.isFamily(Os.FAMILY_WINDOWS))
-                commandLine 'cmd', '/c', 'create.bat'
-            else
-                commandLine './create'
-        }
-    }
-}
-
-tasks.register('openshiftDeploy') {
-    group = 'openshift'
-    description = 'OpenShift Redeployment'
-
-    doLast {
-        exec {
-            workingDir('src/main/openshift')
-            if (Os.isFamily(Os.FAMILY_WINDOWS))
-                commandLine 'cmd', '/c', 'deploy.bat'
-            else
-                commandLine './deploy'
-        }
-    }
-}
-
-tasks.register('kubernetesCreate') {
-    group = 'kubernetes'
-    description = 'Kubernates Deployment'
-
-    doLast {
-        exec {
-            workingDir('src/main/kubernetes')
-            if (Os.isFamily(Os.FAMILY_WINDOWS))
-                commandLine 'cmd', '/c', 'create.bat'
-            else
-                commandLine './create'
-        }
-    }
-}
-
-tasks.register('kubernetesDeploy') {
-    group = 'kubernetes'
-    description = 'Kubernates Redeployment'
-
-    doLast {
-        exec {
-            workingDir('src/main/kubernetes')
-            if (Os.isFamily(Os.FAMILY_WINDOWS))
-                commandLine 'cmd', '/c', 'deploy.bat'
-            else
-                commandLine './deploy'
-        }
-    }
-}
-
 if (project.hasProperty("enableAws") && project.property("enableAws") == "true") {
 
     apply plugin: 'jp.classmethod.aws.lambda'
@@ -259,9 +198,30 @@ if (project.hasProperty("enableAws") && project.property("enableAws") == "true")
         functionName = "hello-micronaut"
         aliasName = "alias"
         functionVersion = "1"
-        routingConfig {
+        routingConfig(({
             additionalVersionWeight = 0.7
             useNextVersion = true
-        }
+        } as Closure<RoutingConfig>))
     }
+}
+
+/**
+ * Custom plugin for Kubernetes and OpenShift deployment
+ * @see 'plugin/kubernetes.gradle'
+ *
+ * Prerequisites: kubernetes/openshift extentions
+ */
+apply from: 'plugin/kubernetes.gradle'
+
+kubernetes {
+    path = 'deployment/kubernetes.yml'
+    image = 'elvaliev/micronaut-quickstart'
+    name = 'micronaut-quickstart'
+    port = 8090
+}
+
+openshift {
+    path = 'deployment/openshift.yml'
+    name = 'micronaut-quickstart'
+    image = 'elvaliev/micronaut-quickstart'
 }
