@@ -36,7 +36,7 @@ curl https://localhost:8090/greeting
 ## Google Cloud Platform (GCP) 🚩
 **Prerequisites:** `Google Cloud Platform` account. For deploying to `GCP` used [gradle appengine plugin](https://github.com/GoogleCloudPlatform/gradle-appengine-plugin).
 
-To create your `GCP` project and make it ready for using `App Engine`, in particular, those commands:
+Define `appengine/app.yaml` with entry point. To create your `GCP` project and make it ready for using `App Engine`, in particular, those commands:
 ```shell
 gcloud projects create PROJECT_ID --set-as-default
 
@@ -113,4 +113,4 @@ Update alias:
 
 
 ### GraalVM image
-For creating and deploying on changes application as `Amazom Lambda` prepared script `deploy.sh` and Dockerfile in `src/main/aws` directory. Define values in `deploy.sh` for variables `ROLE_NAME` and `S3_BUCKET_NAME` and run script: `sh deploy`
+For creating and deploying on changes application as `Amazom Lambda` prepared script `deploy.sh` and Dockerfile in `aws` directory. Run script `./deploy ROLE_NAME S3_BUCKET_NAME` with arguments `ROLE_NAME` and `S3_BUCKET_NAME`.

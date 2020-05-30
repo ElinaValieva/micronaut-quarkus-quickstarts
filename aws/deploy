@@ -1,4 +1,7 @@
 #!/bin/bash
+ROLE_NAME=$1
+S3_BUCKET_NAME=$2
+
 if [ ! "${1}" == "skip-build" ]; then
   echo "Building the function.zip..."
   docker build . -t micronaut-quickstart
@@ -7,8 +10,7 @@ if [ ! "${1}" == "skip-build" ]; then
 fi
 
 # check for role
-ROLE_NAME=lambda-basic-role
-ROLE_ARN=`aws iam get-role --role-name ${ROLE_NAME} | grep Arn | cut -d'"' -f4`
+ROLE_ARN=$(aws iam get-role --role-name "${ROLE_NAME}" | grep Arn | cut -d'"' -f4)
 if [ "${ROLE_ARN}" == "" ]; then
     echo "No role ${ROLE_NAME} exists!"
     echo "Create one using: "
@@ -17,17 +19,12 @@ if [ "${ROLE_ARN}" == "" ]; then
     exit 1
 fi
 
-S3_BUCKET_NAME=micronaut-graal-demo
-
 if aws s3api head-bucket --bucket "${S3_BUCKET_NAME}" 2>&1 | grep -q "Not Found"; then
   echo "Bucket not found, creating it..."
-  aws s3 mb s3://${S3_BUCKET_NAME}
+  aws s3 mb s3://"${S3_BUCKET_NAME}"
 fi
 
 
-aws cloudformation package --template-file sam.yaml --output-template-file packaged-sam.yaml --s3-bucket ${S3_BUCKET_NAME}
+aws cloudformation package --template-file sam.yaml --output-template-file packaged-sam.yaml --s3-bucket "${S3_BUCKET_NAME}"
 aws cloudformation deploy --template-file ./packaged-sam.yaml --stack-name MicronautGraalVmDemo --capabilities CAPABILITY_IAM
 aws cloudformation describe-stacks --stack-name MicronautGraalVmDemo --query "Stacks[0].Outputs[0].OutputValue"| cut -d \" -f 2
-
-# To delete everything
-#aws cloudformation delete-stack --stack-name MicronautGraalVmDemo
