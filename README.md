@@ -113,4 +113,4 @@ Update alias:
 
 
 ### GraalVM image
-For creating and deploying on changes application as `Amazom Lambda` prepared script `deploy.sh` and Dockerfile in `aws` directory. Run script `./deploy ROLE_NAME S3_BUCKET_NAME` with arguments `ROLE_NAME` and `S3_BUCKET_NAME`.
+For creating and deploying on changes application as `Amazom Lambda` prepared script `deploy.sh` and Dockerfile in `deployment/aws` directory. Run script `./deploy ROLE_NAME S3_BUCKET_NAME` with arguments `ROLE_NAME` and `S3_BUCKET_NAME`.

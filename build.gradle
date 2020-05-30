@@ -205,18 +205,23 @@ if (project.hasProperty("enableAws") && project.property("enableAws") == "true")
     }
 }
 
-
-apply from: 'kubernetes.gradle'
+/**
+ * Custom plugin for Kubernetes and OpenShift deployment
+ * @see 'plugin/kubernetes.gradle'
+ *
+ * Prerequisites: kubernetes/openshift extentions
+ */
+apply from: 'plugin/kubernetes.gradle'
 
 kubernetes {
-    path = 'templates/kubernetes.yml'
+    path = 'deployment/kubernetes.yml'
     image = 'elvaliev/micronaut-quickstart'
     name = 'micronaut-quickstart'
     port = 8090
 }
 
 openshift {
-    path = 'templates/openshift.yml'
+    path = 'deployment/openshift.yml'
     name = 'micronaut-quickstart'
     image = 'elvaliev/micronaut-quickstart'
 }

@@ -10,7 +10,7 @@ class KubernetesPluginExtension {
 class KubernetesPlugin implements Plugin<Project> {
 
     void apply(Project project) {
-        def directory = 'kubernetes'
+        def directory = 'plugin'
         def kubernetesExtension = project.extensions.create('kubernetes', KubernetesPluginExtension)
         def openShiftExtension = project.extensions.create('openshift', KubernetesPluginExtension)
 
