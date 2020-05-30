@@ -34,9 +34,9 @@ curl https://localhost:8090/greeting
 
 &nbsp;
 ## Google Cloud Platform (GCP) 🚩
-**Prerequisites:** `Google Cloud Platform` account. For deploying to `GCP` used [gradle appengine plugin](https://github.com/GoogleCloudPlatform/gradle-appengine-plugin).
+**Prerequisites:** `Google Cloud Platform` account. Define `appengine/app.yaml` with entry point. 
 
-Define `appengine/app.yaml` with entry point. To create your `GCP` project and make it ready for using `App Engine`, in particular, those commands:
+For deploying to `GCP` used [gradle appengine plugin](https://github.com/GoogleCloudPlatform/gradle-appengine-plugin). To create your `GCP` project and make it ready for using `App Engine`, in particular, those commands:
 ```shell
 gcloud projects create PROJECT_ID --set-as-default
 
@@ -55,9 +55,9 @@ gcloud app browse
 &nbsp;
 
 ## OpenShift 🚩
-**Prerequisites:** `OpenShift Client` - login with client. 
+**Prerequisites:** `OpenShift Client` - login with client. Application template (see more `deployment/openshift.yaml`. 
 
-For creating and deploying on changes application on `OpenShift` prepared platform-independent scripts and application template in `src/main/openshift`. These scripts could be used directly or run as a gradle tasks (see `openshift` group in gradle tasks).
+For creating and deploying on changes application on `OpenShift` used gradle plugin `kubernetes.gradle` in `plugin` folder. These scripts could be used directly or run as a gradle tasks (see `openshift` group in gradle tasks).
 
 For creating a new application on Openshift: 
 ```gradle
@@ -70,9 +70,9 @@ For redeploying application on Openshift:
 &nbsp;
 
 ## Kubernetes 🚩
-**Prerequisites:** `Kubernetes Client` - login with client. 
+**Prerequisites:** `Kubernetes Client` - login with client. Application template (see more `deployment/kubernetes.yaml`.
 
-For creating and deploying on changes application on `Kubernetes` prepared platform-independent scripts and application template in `src/main/kubernetes`. These scripts could be used directly or run as a gradle tasks (see `kubernetes` group in gradle tasks).
+For creating and deploying on changes application on `Kubernetes`  used gradle plugin `kubernetes.gradle` in `plugin` folder. These scripts could be used directly or run as a gradle tasks (see `kubernetes` group in gradle tasks).
 
 For creating a new application on Kubernetes: 
 ```gradle
@@ -113,4 +113,7 @@ Update alias:
 
 
 ### GraalVM image
-For creating and deploying on changes application as `Amazom Lambda` prepared script `deploy.sh` and Dockerfile in `deployment/aws` directory. Run script `./deploy ROLE_NAME S3_BUCKET_NAME` with arguments `ROLE_NAME` and `S3_BUCKET_NAME`.
+For creating and deploying on changes application as `Amazom Lambda` prepared script `deploy.sh` and Dockerfile in `deployment/aws` directory. Run script with yours `ROLE_NAME` and `S3_BUCKET` arguments:
+```shell
+./deploy ROLE_NAME S3_BUCKET
+```
