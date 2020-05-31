@@ -214,14 +214,14 @@ if (project.hasProperty("enableAws") && project.property("enableAws") == "true")
 apply from: 'plugin/kubernetes.gradle'
 
 kubernetes {
-    path = 'deployment/kubernetes.yml'
+    path = 'k8s/kubernetes.yml'
     image = 'elvaliev/micronaut-quickstart'
     name = 'micronaut-quickstart'
     port = 8090
 }
 
 openshift {
-    path = 'deployment/openshift.yml'
+    path = 'k8s/openshift.yml'
     name = 'micronaut-quickstart'
     image = 'elvaliev/micronaut-quickstart'
 }
