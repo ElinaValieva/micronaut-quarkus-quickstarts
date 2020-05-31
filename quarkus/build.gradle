@@ -1,3 +1,12 @@
+buildscript {
+    repositories {
+        mavenLocal()
+    }
+    dependencies {
+        classpath 'org.gradle:k8s-plugin:1.0.0'
+    }
+}
+
 plugins {
     id 'java'
     id 'io.quarkus'
@@ -5,8 +14,8 @@ plugins {
 }
 
 repositories {
-    mavenLocal()
     mavenCentral()
+    jcenter()
 }
 
 dependencies {
@@ -54,21 +63,21 @@ compileTestKotlin {
 
 /**
  * Custom plugin for Kubernetes and OpenShift deployment
- * @see 'plugin/kubernetes.gradle'
+ * @see 'k8s-plugin'
  *
  * Prerequisites: kubernetes/openshift extentions
  */
-apply from: '../plugin/kubernetes.gradle'
+apply plugin: 'org.gradle.k8s-plugin'
 
 kubernetes {
     path = 'build/kubernetes/kubernetes.yml'
     image = 'elvaliev/quarkus-quickstart'
-    name = 'quarkus-quickstart'
+    application = 'quarkus-quickstart'
     port = 8090
 }
 
 openshift {
     path = 'build/kubernetes/openshift.yml'
-    name = 'quarkus-quickstart'
+    application = 'quarkus-quickstart'
     image = 'elvaliev/quarkus-quickstart'
 }
