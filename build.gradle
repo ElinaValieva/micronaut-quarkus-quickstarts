@@ -5,12 +5,14 @@ import jp.classmethod.aws.gradle.lambda.*
 buildscript {
     repositories {
         jcenter()
+        mavenLocal()
         mavenCentral()
     }
 
     dependencies {
         classpath 'com.google.cloud.tools:appengine-gradle-plugin:2.2.0'
         classpath "jp.classmethod.aws:gradle-aws-plugin:0.41"
+        classpath 'org.gradle:k8s-plugin:1.0.0'
     }
 }
 
@@ -207,21 +209,21 @@ if (project.hasProperty("enableAws") && project.property("enableAws") == "true")
 
 /**
  * Custom plugin for Kubernetes and OpenShift deployment
- * @see 'plugin/kubernetes.gradle'
+ * @see 'k8s-plugin'
  *
  * Prerequisites: kubernetes/openshift extentions
  */
-apply from: 'plugin/kubernetes.gradle'
+apply plugin: 'org.gradle.k8s-plugin'
 
 kubernetes {
-    path = 'deployment/kubernetes.yml'
+    path = 'k8s/kubernetes.yml'
     image = 'elvaliev/micronaut-quickstart'
-    name = 'micronaut-quickstart'
+    application = 'micronaut-quickstart'
     port = 8090
 }
 
 openshift {
-    path = 'deployment/openshift.yml'
-    name = 'micronaut-quickstart'
+    path = 'k8s/openshift.yml'
+    application = 'micronaut-quickstart'
     image = 'elvaliev/micronaut-quickstart'
 }

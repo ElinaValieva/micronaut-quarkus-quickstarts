@@ -1,9 +1,0 @@
-#!/usr/bin/env bash
-application=$1
-image=$2
-templatePath=$3
-
-echo "Starting creating $application from docker registry $image by template from $templatePath"
-oc create -f "$templatePath" | oc apply -f-
-oc tag "$image" "$application":latest
-oc expose svc/"$image"

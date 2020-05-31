@@ -1,0 +1,14 @@
+quarkus:
+  http:
+    port: 8090
+  kubernetes:
+    deployment-target: kubernetes, openshift
+    labels:
+      app: quarkus
+  container-image:
+    name: quarkus-quickstart
+    tag: latest
+    registry: docker.io
+    username: username
+    password: password
+    push: true
