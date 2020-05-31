@@ -1,4 +1,4 @@
-package org.gradle.k8s_plugin
+package com.elvaliev.k8s_plugin
 
 import org.apache.tools.ant.taskdefs.condition.Os
 import org.gradle.api.Plugin

@@ -1,4 +1,4 @@
-package org.gradle.k8s_plugin
+package com.elvaliev.k8s_plugin
 
 class KubernetesExtension {
 

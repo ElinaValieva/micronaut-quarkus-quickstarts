@@ -1,4 +1,4 @@
-package org.gradle.k8s_plugin
+package com.elvaliev.k8s_plugin
 
 import org.gradle.api.Project
 import org.gradle.testfixtures.ProjectBuilder
