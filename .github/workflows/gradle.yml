@@ -33,6 +33,9 @@ jobs:
           ./gradlew test
       - name: Test with Gradle
         run: ./gradlew test
+      - name: Jib
+        if: github.ref == 'refs/heads/master'
+        run: echo "Hell"
 
   deploy:
     runs-on: ubuntu-latest
