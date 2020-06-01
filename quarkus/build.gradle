@@ -23,6 +23,7 @@ dependencies {
     implementation 'io.quarkus:quarkus-resteasy'
     implementation 'io.quarkus:quarkus-smallrye-health'
     implementation 'io.quarkus:quarkus-container-image-docker'
+    implementation 'io.quarkus:quarkus-amazon-lambda-http'
     implementation 'io.quarkus:quarkus-kubernetes'
     implementation 'io.quarkus:quarkus-config-yaml'
     testImplementation 'io.quarkus:quarkus-junit5'
@@ -70,14 +71,26 @@ compileTestKotlin {
 apply plugin: 'com.elvaliev.k8s_plugin'
 
 kubernetes {
-    path = 'build/kubernetes/kubernetes.yml'
+    path = "${project.buildDir}\\kubernetes\\kubernetes.yml"
     image = 'elvaliev/quarkus-quickstart'
     application = 'quarkus-quickstart'
     port = 8090
 }
 
 openshift {
-    path = 'build/kubernetes/openshift.yml'
+    path = "${project.buildDir}\\kubernetes\\openshift.yml"
     application = 'quarkus-quickstart'
     image = 'elvaliev/quarkus-quickstart'
+}
+
+if (project.hasProperty("enableAws") && project.property("enableAws") == "true") {
+    aws {
+        samTemplate = file("${project.buildDir}\\sam.jvm.yaml")
+        s3Bucket = AWS_BUCKET_NAME
+        stackName = AWS_STACK_NAME
+    }
+} else {
+    configurations {
+        runtime.exclude group: 'io.quarkus', module: 'quarkus-amazon-lambda-http'
+    }
 }
