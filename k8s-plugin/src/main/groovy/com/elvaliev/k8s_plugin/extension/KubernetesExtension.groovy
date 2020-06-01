@@ -1,4 +1,4 @@
-package com.elvaliev.k8s_plugin
+package com.elvaliev.k8s_plugin.extension
 
 class KubernetesExtension {
 
