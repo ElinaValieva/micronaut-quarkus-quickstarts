@@ -3,7 +3,7 @@ buildscript {
         mavenLocal()
     }
     dependencies {
-        classpath 'com.elvaliev:k8s-plugin:1.0.1'
+        classpath 'com.elvaliev:k8s_aws_plugin:1.0.0'
         classpath 'com.google.cloud.tools:appengine-gradle-plugin:2.2.0'
     }
 }
@@ -88,7 +88,7 @@ appengine {
  *
  * Prerequisites: kubernetes/openshift extentions
  */
-apply plugin: 'com.elvaliev.k8s_plugin'
+apply plugin: 'com.elvaliev.k8s_aws_plugin'
 
 kubernetes {
     path = "${project.buildDir}\\kubernetes\\kubernetes.yml"
