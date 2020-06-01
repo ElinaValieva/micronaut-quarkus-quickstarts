@@ -4,6 +4,7 @@ buildscript {
     }
     dependencies {
         classpath 'com.elvaliev:k8s-plugin:1.0.1'
+        classpath 'com.google.cloud.tools:appengine-gradle-plugin:2.2.0'
     }
 }
 
@@ -60,6 +61,25 @@ compileTestKotlin {
     kotlinOptions {
         jvmTarget = "1.8"
     }
+}
+apply plugin: "com.google.cloud.tools.appengine-appyaml"
+
+appengine {
+    stage.artifact =
+            "${buildDir}/libs/${project.name}-${project.version}.jar"
+
+    /**
+     *  stopPreviousVersion = true  -  default - stop the current version
+     *  promote = true              - default - & make this the current version
+     *
+     */
+    deploy {
+        stopPreviousVersion = true
+        promote = true
+        projectId = GCLOUD_CONFIG
+        version = GCLOUD_CONFIG
+    }
+
 }
 
 /**
