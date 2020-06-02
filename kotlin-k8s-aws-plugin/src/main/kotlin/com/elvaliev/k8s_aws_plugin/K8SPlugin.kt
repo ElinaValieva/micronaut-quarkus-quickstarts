@@ -58,5 +58,14 @@ class K8SPlugin : Plugin<Project> {
             openshift.application = openShiftExtension.application
             openshift.image = openShiftExtension.image
         }
+
+        project.allprojects { myProject ->
+            val build = myProject.tasks.getByName("build")
+            myProject.tasks.all { task ->
+                if (arrayListOf("kubernetes", "openshift", "aws").contains(task.group)) {
+                    task.dependsOn(build)
+                }
+            }
+        }
     }
 }
