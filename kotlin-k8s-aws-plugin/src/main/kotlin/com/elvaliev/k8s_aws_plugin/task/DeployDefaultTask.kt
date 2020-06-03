@@ -1,10 +1,10 @@
 package com.elvaliev.k8s_aws_plugin.task
 
 import org.apache.tools.ant.taskdefs.condition.Os
-import org.gradle.api.DefaultTask
 import org.gradle.api.GradleException
+import org.gradle.api.Project
 
-open class DeployTask : DefaultTask() {
+open class DeployDefaultTask(open val project: Project) {
 
     enum class Client {
         kubectl, oc, sam
@@ -19,14 +19,20 @@ open class DeployTask : DefaultTask() {
         }
     }
 
+    fun checkFile(filePath: String) {
+        print(filePath)
+        if (!project.file(filePath).exists())
+            throw GradleException("File doesn't exist by provided path: $filePath")
+    }
+
     fun executeCommand(command: String) {
         println(command)
         try {
-            project.exec { e ->
+            project.exec {
                 if (Os.isFamily(Os.FAMILY_WINDOWS))
-                    e.commandLine("cmd", "/c", command)
+                    commandLine("cmd", "/c", command)
                 else
-                    e.commandLine(command)
+                    commandLine(command)
             }
         } catch (e: Exception) {
             println(e)

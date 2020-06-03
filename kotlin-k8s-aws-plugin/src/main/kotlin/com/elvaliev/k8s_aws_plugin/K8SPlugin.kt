@@ -1,69 +1,81 @@
 package com.elvaliev.k8s_aws_plugin
 
-import com.elvaliev.k8s_aws_plugin.extension.AwsExtension
-import com.elvaliev.k8s_aws_plugin.extension.KubernetesExtension
-import com.elvaliev.k8s_aws_plugin.task.*
+import com.elvaliev.k8s_aws_plugin.PluginConstant.Companion.Aws
+import com.elvaliev.k8s_aws_plugin.PluginConstant.Companion.AwsLocal
+import com.elvaliev.k8s_aws_plugin.PluginConstant.Companion.AwsPackage
+import com.elvaliev.k8s_aws_plugin.PluginConstant.Companion.AwsTaskDescription
+import com.elvaliev.k8s_aws_plugin.PluginConstant.Companion.Kubernetes
+import com.elvaliev.k8s_aws_plugin.PluginConstant.Companion.KubernetesDeploy
+import com.elvaliev.k8s_aws_plugin.PluginConstant.Companion.KubernetesRedeploy
+import com.elvaliev.k8s_aws_plugin.PluginConstant.Companion.KubernetesTaskDescription
+import com.elvaliev.k8s_aws_plugin.PluginConstant.Companion.Openshift
+import com.elvaliev.k8s_aws_plugin.PluginConstant.Companion.OpenshiftDeploy
+import com.elvaliev.k8s_aws_plugin.PluginConstant.Companion.OpenshiftRedeploy
+import com.elvaliev.k8s_aws_plugin.PluginConstant.Companion.OpenshiftTaskDescription
+import com.elvaliev.k8s_aws_plugin.extension.AwsPluginExtension
+import com.elvaliev.k8s_aws_plugin.extension.KubernetesPluginExtension
+import com.elvaliev.k8s_aws_plugin.task.AwsTask
+import com.elvaliev.k8s_aws_plugin.task.KubernetesTask
+import com.elvaliev.k8s_aws_plugin.task.OpenshiftTask
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 
 class K8SPlugin : Plugin<Project> {
 
     override fun apply(project: Project) {
-        val awsExtension = project.extensions.create("aws", AwsExtension::class.java)
-        val kubernetesExtension = project.extensions.create("kubernetes", KubernetesExtension::class.java)
-        val openShiftExtension = project.extensions.create("openshift", KubernetesExtension::class.java)
+        val awsExtension = project.extensions.create(Aws, AwsPluginExtension::class.java)
 
-        project.tasks.register("awsPackage", AwsDeployTask::class.java) { aws ->
-            aws.group = "aws"
-            aws.description = "AWS Deployment"
-            aws.samTemplate = awsExtension.samTemplate
-            aws.s3Bucket = awsExtension.s3Bucket
-            aws.stackName = awsExtension.stackName
+        val awsLocal = project.task(AwsLocal)
+        awsLocal.group = Aws
+        awsLocal.description = AwsTaskDescription
+        awsLocal.doLast {
+            AwsTask(project).buildLambda(awsExtension)
         }
 
-        project.tasks.register("awsLocal", AwsLocalTask::class.java) { aws ->
-            aws.group = "aws"
-            aws.description = "AWS Deployment"
-            aws.samTemplate = awsExtension.samTemplate
+        val awsPackage = project.task(AwsPackage)
+        awsPackage.group = Aws
+        awsPackage.description = AwsTaskDescription
+        awsPackage.doLast {
+            AwsTask(project).packageLambda(awsExtension)
         }
 
-        project.tasks.register("kubernetesCreate", KubernetesDeployTask::class.java) { kubernetes ->
-            kubernetes.group = "kubernetes"
-            kubernetes.description = "Kubernates Deployment"
-            kubernetes.application = kubernetesExtension.application
-            kubernetes.image = kubernetesExtension.image
-            kubernetes.templatePath = kubernetesExtension.path
-            kubernetes.port = kubernetesExtension.port.toString()
+        val kubernetesExtension = project.extensions.create(Kubernetes, KubernetesPluginExtension::class.java)
+
+        val kubernetesDeploy = project.task(KubernetesDeploy)
+        kubernetesDeploy.group = Kubernetes
+        kubernetesDeploy.description = KubernetesTaskDescription
+        kubernetesDeploy.doLast {
+            KubernetesTask(project).deploy(kubernetesExtension)
         }
 
-        project.tasks.register("deployKubernetes", KubernetesRedeployTask::class.java) { kubernetes ->
-            kubernetes.group = "kubernetes"
-            kubernetes.description = "Kubernates Redeployment"
-            kubernetes.application = kubernetesExtension.application
-            kubernetes.image = kubernetesExtension.image
-            kubernetes.port = kubernetesExtension.port.toString()
+        val kubernetesRedeploy = project.task(KubernetesRedeploy)
+        kubernetesRedeploy.group = Kubernetes
+        kubernetesRedeploy.description = KubernetesTaskDescription
+        kubernetesRedeploy.doLast {
+            KubernetesTask(project).redeploy(kubernetesExtension)
         }
 
-        project.tasks.register("openshiftCreate", OpenShiftDeployTask::class.java) { openshift ->
-            openshift.group = "openshift"
-            openshift.description = "OpenShift Deployment"
-            openshift.application = openShiftExtension.application
-            openshift.image = openShiftExtension.image
-            openshift.templatePath = openShiftExtension.path
+        val openShiftExtension = project.extensions.create(Openshift, KubernetesPluginExtension::class.java)
+
+        val openshiftDeploy = project.task(OpenshiftDeploy)
+        openshiftDeploy.group = Openshift
+        openshiftDeploy.description = OpenshiftTaskDescription
+        openshiftDeploy.doLast {
+            OpenshiftTask(project).deploy(openShiftExtension)
         }
 
-        project.tasks.register("openshiftDeploy", OpenShiftRedeployTask::class.java) { openshift ->
-            openshift.group = "openshift"
-            openshift.description = "OpenShift Redeployment"
-            openshift.application = openShiftExtension.application
-            openshift.image = openShiftExtension.image
+        val openshiftRedeploy = project.task(OpenshiftRedeploy)
+        openshiftRedeploy.group = Openshift
+        openshiftRedeploy.description = OpenshiftTaskDescription
+        openshiftRedeploy.doLast {
+            OpenshiftTask(project).redeploy(openShiftExtension)
         }
 
-        project.allprojects { myProject ->
-            val build = myProject.tasks.getByName("build")
-            myProject.tasks.all { task ->
-                if (arrayListOf("kubernetes", "openshift", "aws").contains(task.group)) {
-                    task.dependsOn(build)
+        project.allprojects {
+            val build = tasks.getByName("build")
+            tasks.all {
+                if (arrayListOf(Kubernetes, Openshift, Aws).contains(group)) {
+                    dependsOn(build)
                 }
             }
         }
