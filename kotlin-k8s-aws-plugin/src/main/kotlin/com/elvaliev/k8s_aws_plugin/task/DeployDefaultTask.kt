@@ -11,7 +11,6 @@ open class DeployDefaultTask(open val project: Project) {
     }
 
     fun checkForClient(client: Client) {
-        println("Client $client")
         try {
             executeCommand("$client --help")
         } catch (e: Exception) {
@@ -20,13 +19,11 @@ open class DeployDefaultTask(open val project: Project) {
     }
 
     fun checkFile(filePath: String) {
-        print(filePath)
         if (!project.file(filePath).exists())
             throw GradleException("File doesn't exist by provided path: $filePath")
     }
 
     fun executeCommand(command: String) {
-        println(command)
         try {
             project.exec {
                 if (Os.isFamily(Os.FAMILY_WINDOWS))
@@ -35,7 +32,6 @@ open class DeployDefaultTask(open val project: Project) {
                     commandLine(command)
             }
         } catch (e: Exception) {
-            println(e)
             throw GradleException("Error was occupied: $e")
         }
     }

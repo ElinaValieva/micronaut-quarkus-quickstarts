@@ -34,7 +34,7 @@ gradlePlugin {
 
 pluginBundle {
     website = 'https://github.com/ElinaValieva/micronaut-quickstarts'
-    vcsUrl = 'https://github.com/ElinaValieva/micronaut-quickstarts/tree/master/k8s-plugin'
+    vcsUrl = 'https://github.com/ElinaValieva/micronaut-quickstarts.git'
     tags = ['openshift', 'kubernetes', 'aws', 'serverless']
 }
 
