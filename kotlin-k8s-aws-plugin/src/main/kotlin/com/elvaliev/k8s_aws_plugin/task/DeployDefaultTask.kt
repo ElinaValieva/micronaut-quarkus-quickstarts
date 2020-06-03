@@ -36,4 +36,12 @@ open class DeployDefaultTask : DefaultTask() {
             throw GradleException("Error was occupied: $e")
         }
     }
+
+    fun createCommandLineArgs(command: String): List<String> {
+        val args = command.split(" ")
+
+        if (Os.isFamily(Os.FAMILY_WINDOWS))
+            return listOf("cmd", "/c") + args
+        return args
+    }
 }

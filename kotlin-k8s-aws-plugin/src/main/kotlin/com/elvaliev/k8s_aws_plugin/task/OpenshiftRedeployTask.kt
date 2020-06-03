@@ -9,9 +9,8 @@ open class OpenshiftRedeployTask : DeployDefaultTask() {
     @TaskAction
     fun run() {
         val extension = project.extensions.findByName(PluginConstant.Openshift) as KubernetesPluginExtension
-        println("Start task: ${extension.print()}")
+        println("${PluginConstant.ANSI_GREEN}Start task: ${extension.print()}${PluginConstant.ANSI_RESET}")
         checkForClient(Client.oc)
-        println("Redeploy application ${extension.application} from docker image ${extension.image}")
         executeCommand("oc tag ${extension.image} ${extension.application}:latest")
     }
 }

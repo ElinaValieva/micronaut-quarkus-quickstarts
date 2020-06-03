@@ -15,5 +15,9 @@ class PluginConstant {
         const val OpenshiftDeploy = "openshiftDeploy"
         const val OpenshiftRedeploy = "OpenshiftRedeploy"
         const val OpenshiftTaskDescription = "Tasks for creating/redeploying application on Openshift"
+
+        const val ANSI_RED = "\u001B[31m"
+        const val ANSI_RESET = "\u001B[0m"
+        const val ANSI_GREEN = "\u001B[32m"
     }
 }

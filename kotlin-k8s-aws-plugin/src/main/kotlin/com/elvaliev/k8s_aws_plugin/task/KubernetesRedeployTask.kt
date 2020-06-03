@@ -9,9 +9,10 @@ open class KubernetesRedeployTask : DeployDefaultTask() {
     @TaskAction
     fun run() {
         val extension = project.extensions.findByName(PluginConstant.Kubernetes) as KubernetesPluginExtension
-        println("Start task: ${extension.print()}")
+        println("${PluginConstant.ANSI_GREEN}Start task: ${extension.print()}${PluginConstant.ANSI_RESET}")
         checkForClient(Client.kubectl)
-        println("Redeploy application ${extension.application} from docker image ${extension.image}")
-        executeCommand("kubectl set image deployment ${extension.application}  ${extension.application}=${extension.port}")
+        extension.port?.let {
+            executeCommand("kubectl set image deployment ${extension.application}  ${extension.application}=${extension.port}")
+        }
     }
 }

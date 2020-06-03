@@ -11,8 +11,12 @@ open class AwsPackageTask : DeployDefaultTask() {
         val extension = project.extensions.findByName(Aws) as AwsPluginExtension
         println(extension.print())
         checkForClient(Client.sam)
-        checkFile(extension.samTemplate)
-        executeCommand("sam package --template-file ${extension.samTemplate} --output-template-file packaged.yaml --s3-bucket ${extension.s3Bucket}")
-        executeCommand("sam deploy --template-file packaged.yaml --capabilities CAPABILITY_IAM --stack-name ${extension.stackName}")
+        extension.samTemplate?.let { checkFile(it) }
+        extension.s3Bucket?.let {
+            executeCommand("sam package --template-file ${extension.samTemplate} --output-template-file packaged.yaml --s3-bucket ${extension.s3Bucket}")
+        }
+        extension.stackName?.let {
+            executeCommand("sam deploy --template-file packaged.yaml --capabilities CAPABILITY_IAM --stack-name ${extension.stackName}")
+        }
     }
 }

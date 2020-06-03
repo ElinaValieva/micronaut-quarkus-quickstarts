@@ -2,15 +2,20 @@ package com.elvaliev.k8s_aws_plugin.extension
 
 open class KubernetesPluginExtension {
 
-    var application: String = "undefined"
+    var application: String? = null
 
-    var path: String = "undefined"
+    var path: String? = null
 
-    var image: String = "undefined"
+    var image: String? = null
 
-    var port: String = "8080"
+    var port: String? = null
 
     open fun print(): String {
-        return "Application = $application, template = $path, image = $image, port = $port"
+        var info = ""
+        application?.let { info += "Application = $application " }
+        path?.let { info += "Template = $path " }
+        image?.let { info += "Image = $image " }
+        port?.let { info += "Port = $port " }
+        return info
     }
 }
