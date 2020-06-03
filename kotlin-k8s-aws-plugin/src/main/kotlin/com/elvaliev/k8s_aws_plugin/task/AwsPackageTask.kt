@@ -1,18 +1,14 @@
 package com.elvaliev.k8s_aws_plugin.task
 
+import com.elvaliev.k8s_aws_plugin.PluginConstant.Companion.Aws
 import com.elvaliev.k8s_aws_plugin.extension.AwsPluginExtension
-import org.gradle.api.Project
+import org.gradle.api.tasks.TaskAction
 
-open class AwsTask(override val project: Project) : DeployDefaultTask(project) {
+open class AwsPackageTask : DeployDefaultTask() {
 
-    open fun buildLambda(extension: AwsPluginExtension) {
-        println(extension.print())
-        checkForClient(Client.sam)
-        checkFile(extension.samTemplate)
-        executeCommand("sam local start-api --template ${extension.samTemplate}")
-    }
-
-    open fun packageLambda(extension: AwsPluginExtension) {
+    @TaskAction
+    fun run() {
+        val extension = project.extensions.findByName(Aws) as AwsPluginExtension
         println(extension.print())
         checkForClient(Client.sam)
         checkFile(extension.samTemplate)

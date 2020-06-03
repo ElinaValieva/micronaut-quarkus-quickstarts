@@ -1,10 +1,10 @@
 package com.elvaliev.k8s_aws_plugin.task
 
 import org.apache.tools.ant.taskdefs.condition.Os
+import org.gradle.api.DefaultTask
 import org.gradle.api.GradleException
-import org.gradle.api.Project
 
-open class DeployDefaultTask(open val project: Project) {
+open class DeployDefaultTask : DefaultTask() {
 
     enum class Client {
         kubectl, oc, sam
@@ -32,6 +32,7 @@ open class DeployDefaultTask(open val project: Project) {
                     commandLine(command)
             }
         } catch (e: Exception) {
+            println(e)
             throw GradleException("Error was occupied: $e")
         }
     }

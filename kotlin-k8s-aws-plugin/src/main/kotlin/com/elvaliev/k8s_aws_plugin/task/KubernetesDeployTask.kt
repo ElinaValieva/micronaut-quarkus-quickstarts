@@ -1,11 +1,14 @@
 package com.elvaliev.k8s_aws_plugin.task
 
+import com.elvaliev.k8s_aws_plugin.PluginConstant.Companion.Kubernetes
 import com.elvaliev.k8s_aws_plugin.extension.KubernetesPluginExtension
-import org.gradle.api.Project
+import org.gradle.api.tasks.TaskAction
 
-open class KubernetesTask(override val project: Project) : DeployDefaultTask(project) {
+open class KubernetesDeployTask : DeployDefaultTask() {
 
-    open fun deploy(extension: KubernetesPluginExtension) {
+    @TaskAction
+    fun run() {
+        val extension = project.extensions.findByName(Kubernetes) as KubernetesPluginExtension
         println("Start task: ${extension.print()}")
         checkForClient(Client.kubectl)
         checkFile(extension.path)
@@ -15,10 +18,4 @@ open class KubernetesTask(override val project: Project) : DeployDefaultTask(pro
         executeCommand("kubectl expose deployment ${extension.application} --type=LoadBalancer --port=${extension.port}")
     }
 
-    open fun redeploy(extension: KubernetesPluginExtension) {
-        println("Start task: ${extension.print()}")
-        checkForClient(Client.kubectl)
-        println("Redeploy application ${extension.application} from docker image ${extension.image}")
-        executeCommand("kubectl set image deployment ${extension.application}  ${extension.application}=${extension.port}")
-    }
 }
