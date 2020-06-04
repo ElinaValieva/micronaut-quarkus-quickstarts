@@ -9,7 +9,7 @@ buildscript {
 
 plugins {
     id 'java'
-    id 'io.quarkus'
+    id 'io.quarkus' version "1.4.2.Final"
     id 'org.jetbrains.kotlin.jvm' version '1.3.72'
     id "com.elvaliev.k8s_aws_plugin" version "1.0.2"
 }

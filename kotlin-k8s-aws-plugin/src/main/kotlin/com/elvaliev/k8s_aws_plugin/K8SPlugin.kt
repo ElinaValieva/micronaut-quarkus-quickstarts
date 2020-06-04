@@ -50,10 +50,11 @@ class K8SPlugin : Plugin<Project> {
         openshiftRedeploy.description = OpenshiftTaskDescription
 
         project.allprojects {
-            val build = tasks.getByName("build")
-            tasks.all {
-                if (arrayListOf(Kubernetes, Openshift, Aws).contains(group)) {
-                    dependsOn(build)
+            tasks.findByName("build")?.let {
+                tasks.all {
+                    if (arrayListOf(Kubernetes, Openshift, Aws).contains(group)) {
+                        dependsOn(it)
+                    }
                 }
             }
         }

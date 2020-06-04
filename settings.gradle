@@ -1,0 +1,5 @@
+rootProject.name = 'quarkus-micronaut-quickstart'
+
+include('micronaut')
+include('quarkus')
+include('kotlin-k8s-aws-plugin')

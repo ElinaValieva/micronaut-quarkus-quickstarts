@@ -15,7 +15,7 @@ open class KubernetesPluginExtension {
         application?.let { info += "Application = $application " }
         path?.let { info += "Template = $path " }
         image?.let { info += "Image = $image " }
-        port?.let { info += "Port = $port " }
+        port?.let { info += "Port = $port" }
         return info
     }
 }
