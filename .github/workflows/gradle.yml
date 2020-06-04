@@ -23,13 +23,6 @@ jobs:
           key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
           restore-keys: |
             ${{ runner.os }}-maven-
-      - name: Build for k8s-plugin
-        run: |
-          cd kotlin-k8s-aws-plugin
-          chmod +x gradlew
-          ./gradlew build
-          ./gradlew install
-          cd ..
       - name: Test with Gradle
         run: ./gradlew test
       - name: Jib

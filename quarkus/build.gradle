@@ -3,7 +3,6 @@ buildscript {
         mavenLocal()
     }
     dependencies {
-        classpath 'com.elvaliev:k8s_aws_plugin:1.0.0'
         classpath 'com.google.cloud.tools:appengine-gradle-plugin:2.2.0'
     }
 }
@@ -12,6 +11,7 @@ plugins {
     id 'java'
     id 'io.quarkus'
     id 'org.jetbrains.kotlin.jvm' version '1.3.72'
+    id "com.elvaliev.k8s_aws_plugin" version "1.0.2"
 }
 
 repositories {
@@ -88,8 +88,6 @@ appengine {
  *
  * Prerequisites: kubernetes/openshift extentions
  */
-apply plugin: 'com.elvaliev.k8s_aws_plugin'
-
 kubernetes {
     path = "${project.buildDir}\\kubernetes\\kubernetes.yml"
     image = 'elvaliev/quarkus-quickstart'

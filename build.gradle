@@ -12,7 +12,6 @@ buildscript {
     dependencies {
         classpath 'com.google.cloud.tools:appengine-gradle-plugin:2.2.0'
         classpath "jp.classmethod.aws:gradle-aws-plugin:0.41"
-        classpath 'com.elvaliev:k8s_aws_plugin:1.0.0'
     }
 }
 
@@ -23,6 +22,7 @@ plugins {
     id "com.github.johnrengelman.shadow" version "5.2.0"
     id "application"
     id 'com.google.cloud.tools.jib' version '2.3.0'
+    id "com.elvaliev.k8s_aws_plugin" version "1.0.2"
 }
 
 version "1.0.0"
@@ -213,7 +213,6 @@ if (project.hasProperty("enableAws") && project.property("enableAws") == "true")
  *
  * Prerequisites: kubernetes/openshift extentions
  */
-apply plugin: 'com.elvaliev.k8s_aws_plugin'
 
 kubernetes {
     path = 'k8s/kubernetes.yml'
