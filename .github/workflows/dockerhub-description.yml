@@ -4,16 +4,25 @@ on:
     branches:
       - master
     paths:
-      - README.md
       - .github/workflows/dockerhub-description.yml
 jobs:
   dockerHubDescription:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v1
-      - name: Docker Hub Description
+      - name: Docker Hub Description for Micronaut
         uses: peter-evans/dockerhub-description@v2.1.0
         env:
           DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
           DOCKERHUB_PASSWORD: ${{ secrets.DOCKERHUB_PASSWORD }}
           DOCKERHUB_REPOSITORY: elvaliev/micronaut-quickstart
+          README_FILEPATH: ./micronaut/README.md
+      - name: Docker Hub Description For Quarkus
+        uses: peter-evans/dockerhub-description@v2.1.0
+        env:
+          DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+          DOCKERHUB_PASSWORD: ${{ secrets.DOCKERHUB_PASSWORD }}
+          DOCKERHUB_REPOSITORY: elvaliev/quarkus-quickstart
+          README_FILEPATH: ./quarkus/README.md
+
+
