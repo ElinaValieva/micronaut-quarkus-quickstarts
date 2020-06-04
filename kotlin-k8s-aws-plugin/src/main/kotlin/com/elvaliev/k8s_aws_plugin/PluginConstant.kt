@@ -13,7 +13,7 @@ class PluginConstant {
         const val KubernetesTaskDescription = "Tasks for creating/redeploying application on Kubernetes"
         const val Openshift = "openshift"
         const val OpenshiftDeploy = "openshiftDeploy"
-        const val OpenshiftRedeploy = "OpenshiftRedeploy"
+        const val OpenshiftRedeploy = "openshiftRedeploy"
         const val OpenshiftTaskDescription = "Tasks for creating/redeploying application on Openshift"
 
         const val ANSI_RED = "\u001B[31m"

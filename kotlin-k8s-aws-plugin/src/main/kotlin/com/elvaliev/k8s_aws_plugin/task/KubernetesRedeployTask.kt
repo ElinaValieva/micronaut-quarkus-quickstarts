@@ -12,7 +12,7 @@ open class KubernetesRedeployTask : DeployDefaultTask() {
         println("${PluginConstant.ANSI_GREEN}Start task: ${extension.print()}${PluginConstant.ANSI_RESET}")
         checkForClient(Client.kubectl)
         extension.port?.let {
-            executeCommand("kubectl set image deployment ${extension.application}  ${extension.application}=${extension.port}")
+            executeCommand("kubectl set image deployment ${extension.application}  ${extension.application}=${extension.image}")
         }
     }
 }
