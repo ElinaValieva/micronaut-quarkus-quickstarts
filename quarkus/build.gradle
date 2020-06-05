@@ -9,8 +9,8 @@ buildscript {
 
 plugins {
     id 'java'
-    id 'io.quarkus' version "1.4.2.Final"
-    id 'org.jetbrains.kotlin.jvm' version '1.3.72'
+    id 'io.quarkus' version "${quarkusPluginVersion}"
+    id 'org.jetbrains.kotlin.jvm' version "${kotlinVersion}"
     id "com.elvaliev.k8s_aws_plugin" version "1.0.2"
 }
 
@@ -79,12 +79,11 @@ appengine {
         projectId = GCLOUD_CONFIG
         version = GCLOUD_CONFIG
     }
-
 }
 
 /**
  * Custom plugin for Kubernetes and OpenShift deployment
- * @see 'k8s-plugin'
+ * @see 'k8s_aws_plugin'
  *
  * Prerequisites: kubernetes/openshift extentions
  */
