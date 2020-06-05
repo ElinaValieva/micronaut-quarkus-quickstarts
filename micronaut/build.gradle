@@ -6,23 +6,22 @@ buildscript {
     repositories {
         jcenter()
         mavenLocal()
-        mavenCentral()
     }
 
     dependencies {
         classpath 'com.google.cloud.tools:appengine-gradle-plugin:2.2.0'
-        classpath "jp.classmethod.aws:gradle-aws-plugin:0.41"
     }
 }
 
 plugins {
-    id "org.jetbrains.kotlin.jvm" version "1.3.72"
-    id "org.jetbrains.kotlin.kapt" version "1.3.72"
-    id "org.jetbrains.kotlin.plugin.allopen" version "1.3.72"
+    id "org.jetbrains.kotlin.jvm" version "${kotlinVersion}"
+    id "org.jetbrains.kotlin.kapt" version "${kotlinVersion}"
+    id "org.jetbrains.kotlin.plugin.allopen" version "${kotlinVersion}"
     id "com.github.johnrengelman.shadow" version "5.2.0"
     id "application"
     id 'com.google.cloud.tools.jib' version '2.3.0'
-    id "com.elvaliev.k8s_aws_plugin" version "1.0.2"
+    id "com.elvaliev.k8s_aws_plugin" version "1.0.2" apply false
+    id "jp.classmethod.aws.lambda" version "0.41" apply false
 }
 
 version "1.0.0"
@@ -172,7 +171,6 @@ if (project.hasProperty("enableAws") && project.property("enableAws") == "true")
         timeout = 60
     }
 
-
     task invoke(type: AWSLambdaInvokeTask) {
         functionName = "hello-micronaut"
         invocationType = InvocationType.RequestResponse
@@ -205,24 +203,26 @@ if (project.hasProperty("enableAws") && project.property("enableAws") == "true")
             useNextVersion = true
         } as Closure<RoutingConfig>))
     }
-}
+} else {
+    /**
+     * Custom plugin for Kubernetes and OpenShift deployment
+     * @see 'k8s_aws_plugin'
+     *
+     * Prerequisites: kubernetes/openshift extentions
+     */
 
-/**
- * Custom plugin for Kubernetes and OpenShift deployment
- * @see 'k8s-plugin'
- *
- * Prerequisites: kubernetes/openshift extentions
- */
+    apply plugin: "com.elvaliev.k8s_aws_plugin"
 
-kubernetes {
-    path = 'k8s/kubernetes.yml'
-    image = 'elvaliev/micronaut-quickstart'
-    application = 'micronaut-quickstart'
-    port = 8090
-}
+    kubernetes {
+        path = 'k8s/kubernetes.yml'
+        image = 'elvaliev/micronaut-quickstart'
+        application = 'micronaut-quickstart'
+        port = 8090
+    }
 
-openshift {
-    path = 'k8s/openshift.yml'
-    application = 'micronaut-quickstart'
-    image = 'elvaliev/micronaut-quickstart'
+    openshift {
+        path = 'k8s/openshift.yml'
+        application = 'micronaut-quickstart'
+        image = 'elvaliev/micronaut-quickstart'
+    }
 }
