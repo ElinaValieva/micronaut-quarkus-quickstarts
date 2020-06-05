@@ -2,14 +2,20 @@ package com.elvaliev.k8s_aws_plugin.task
 
 import com.elvaliev.k8s_aws_plugin.PluginConstant
 import com.elvaliev.k8s_aws_plugin.extension.KubernetesPluginExtension
+import org.gradle.api.tasks.Input
+import org.gradle.api.tasks.Optional
 import org.gradle.api.tasks.TaskAction
 import org.gradle.api.tasks.options.Option
 
 open class OpenshiftRedeployTask : DeployDefaultTask() {
 
+    @Input
+    @Optional
     @Option(option = "application", description = "Application name")
     var application: String? = null
 
+    @Input
+    @Optional
     @Option(option = "image", description = "Docker registry reference: <user_name>/<image_name>")
     var dockerImage: String? = null
 
