@@ -2,17 +2,17 @@ package com.elvaliev.k8s_aws_plugin.extension
 
 open class AwsPluginExtension {
 
-    var samTemplate: String? = null
+    var template: String? = null
 
-    var s3Bucket: String? = null
+    var bucket: String? = null
 
-    var stackName: String? = null
+    var stack: String? = null
 
     open fun print(): String {
         var info = ""
-        samTemplate?.let { info += "Template = $samTemplate " }
-        s3Bucket?.let { info += "Bucket = $s3Bucket " }
-        stackName?.let { info += "Stack = $stackName" }
+        template?.let { info += "Template = $template " }
+        bucket?.let { info += "Bucket = $bucket " }
+        stack?.let { info += "Stack = $stack" }
         return info
     }
 }

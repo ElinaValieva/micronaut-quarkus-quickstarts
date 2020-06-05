@@ -3,6 +3,9 @@ package com.elvaliev.k8s_aws_plugin.task
 import org.apache.tools.ant.taskdefs.condition.Os
 import org.gradle.api.DefaultTask
 import org.gradle.api.GradleException
+import java.io.BufferedReader
+import java.io.InputStreamReader
+import java.util.concurrent.TimeUnit
 
 open class DeployDefaultTask : DefaultTask() {
 
@@ -10,12 +13,18 @@ open class DeployDefaultTask : DefaultTask() {
         kubectl, oc, sam
     }
 
-    fun checkForClient(client: Client) {
-        try {
-            executeCommand("$client --help")
-        } catch (e: Exception) {
-            throw GradleException("Client $client are not recognized. Check that $client intalled.")
+    fun checkForClient(client: Client, commandArg: String = "--help") {
+        val process = ProcessBuilder(createCommandLineArgs("$client $commandArg"))
+            .directory(project.projectDir).start()
+
+        val bufferedReader = BufferedReader(InputStreamReader(process.errorStream))
+        process.waitFor(3, TimeUnit.SECONDS)
+        while (bufferedReader.ready()) {
+            process.destroy()
+            throw GradleException("Client $client are not recognized. Check that $client installed.")
         }
+
+        process.destroy()
     }
 
     fun checkFile(filePath: String) {
@@ -43,5 +52,15 @@ open class DeployDefaultTask : DefaultTask() {
         if (Os.isFamily(Os.FAMILY_WINDOWS))
             return listOf("cmd", "/c") + args
         return args
+    }
+
+    fun parseValue(valueFromExtension: String?, valueFromCommandLine: String?, parameterName: String): String? {
+        return when (valueFromExtension == null) {
+            true -> when (valueFromCommandLine == null) {
+                true -> throw GradleException("$parameterName was not defined")
+                else -> valueFromCommandLine
+            }
+            else -> valueFromExtension
+        }
     }
 }

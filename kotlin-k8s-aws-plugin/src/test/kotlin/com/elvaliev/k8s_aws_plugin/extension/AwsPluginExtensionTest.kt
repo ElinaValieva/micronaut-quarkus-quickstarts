@@ -8,8 +8,8 @@ internal class AwsPluginExtensionTest {
     @Test
     fun print() {
         val extension = AwsPluginExtension()
-        extension.samTemplate = "templateTest"
-        extension.s3Bucket = "bucketTest"
-        assertEquals("Template = ${extension.samTemplate} Bucket = ${extension.s3Bucket} ", extension.print())
+        extension.template = "templateTest"
+        extension.bucket = "bucketTest"
+        assertEquals("Template = ${extension.template} Bucket = ${extension.bucket} ", extension.print())
     }
 }
