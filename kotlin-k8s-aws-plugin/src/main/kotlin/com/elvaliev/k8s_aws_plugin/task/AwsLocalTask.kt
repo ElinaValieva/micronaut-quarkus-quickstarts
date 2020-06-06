@@ -24,12 +24,12 @@ open class AwsLocalTask : DeployDefaultTask() {
     @TaskAction
     fun run() {
         val extension = project.extensions.findByName(Aws) as? AwsPluginExtension
-        val template = parseValue(extension?.template, samTemplate, "template")
+        var template = parseValue(extension?.template, samTemplate, "template")
 
         println("${ANSI_GREEN}Start task: $template${ANSI_RESET}")
         checkForClient(Client.sam)
         template?.let {
-            checkFile(it)
+            template = retrieveFile(it)
             val arg = createCommandLineArgs("sam local start-api --template $it")
             val process = ProcessBuilder(arg).directory(project.projectDir).start()
 

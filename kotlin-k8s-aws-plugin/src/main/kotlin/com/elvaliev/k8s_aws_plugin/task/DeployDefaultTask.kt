@@ -1,5 +1,6 @@
 package com.elvaliev.k8s_aws_plugin.task
 
+import com.elvaliev.k8s_aws_plugin.PluginConstant
 import org.apache.tools.ant.taskdefs.condition.Os
 import org.gradle.api.DefaultTask
 import org.gradle.api.GradleException
@@ -21,18 +22,25 @@ open class DeployDefaultTask : DefaultTask() {
         process.waitFor(3, TimeUnit.SECONDS)
         while (bufferedReader.ready()) {
             process.destroy()
+            println("${PluginConstant.ANSI_RED}${bufferedReader.readLine()}${PluginConstant.ANSI_RESET}")
             throw GradleException("Client $client are not recognized. Check that $client installed.")
         }
 
         process.destroy()
     }
 
-    fun checkFile(filePath: String) {
-        if (!project.file(filePath).exists())
+    fun retrieveFile(filePath: String): String {
+        if (!project.file(filePath).exists()) {
+            if (project.file("build\\$filePath").exists()) {
+                return "build/$filePath"
+            }
             throw GradleException("File doesn't exist by provided path: $filePath")
+        }
+        return filePath
     }
 
-    fun executeCommand(command: String) {
+    fun executeCommand(command: String, continueOnError: Boolean = false) {
+        println(">> ${PluginConstant.ANSI_GREEN}$command${PluginConstant.ANSI_RESET}")
         try {
             project.exec {
                 if (Os.isFamily(Os.FAMILY_WINDOWS))
@@ -42,7 +50,8 @@ open class DeployDefaultTask : DefaultTask() {
             }
         } catch (e: Exception) {
             println(e)
-            throw GradleException("Error was occupied: $e")
+            if (!continueOnError)
+                throw GradleException("Error was occupied: $e")
         }
     }
 

@@ -1,6 +1,5 @@
 package com.elvaliev.k8s_aws_plugin.task
 
-import com.elvaliev.k8s_aws_plugin.PluginConstant
 import com.elvaliev.k8s_aws_plugin.PluginConstant.Companion.Openshift
 import com.elvaliev.k8s_aws_plugin.extension.KubernetesPluginExtension
 import org.gradle.api.tasks.Input
@@ -13,7 +12,7 @@ open class OpenshiftDeployTask : DeployDefaultTask() {
     @Input
     @Optional
     @Option(option = "application", description = "Application name")
-    var application: String? = null
+    var application: String? = project.name
 
     @Input
     @Optional
@@ -29,16 +28,16 @@ open class OpenshiftDeployTask : DeployDefaultTask() {
     fun run() {
         val extension = project.extensions.findByName(Openshift) as? KubernetesPluginExtension
         val app = parseValue(extension?.application, application, "application")
-        val template = parseValue(extension?.path, templatePath, "template")
+        var template = parseValue(extension?.path, templatePath, "template")
         val image = parseValue(extension?.image, dockerImage, "image")
-        println("${PluginConstant.ANSI_GREEN}Start task: Application: $app, Template: $template, Image = $image${PluginConstant.ANSI_RESET}")
-        checkForClient(Client.oc, "version")
+        checkForClient(Client.oc)
         template?.let {
-            checkFile(template)
-            executeCommand("oc create -f $template | oc apply -f-")
+            template = retrieveFile(it)
+            executeCommand("oc create -f $template", continueOnError = true)
+            executeCommand("oc start-build $app --from-dir build\\libs\\${project.name}-${project.version}.jar --follow")
+            executeCommand("oc expose svc/$app")
             executeCommand("oc tag $image $app:latest")
+            executeCommand("oc get route $app")
         }
     }
-
-
 }

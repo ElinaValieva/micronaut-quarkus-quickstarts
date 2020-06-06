@@ -12,7 +12,7 @@ open class OpenshiftRedeployTask : DeployDefaultTask() {
     @Input
     @Optional
     @Option(option = "application", description = "Application name")
-    var application: String? = null
+    var application: String? = project.name
 
     @Input
     @Optional
@@ -21,11 +21,13 @@ open class OpenshiftRedeployTask : DeployDefaultTask() {
 
     @TaskAction
     fun run() {
+
         val extension = project.extensions.findByName(PluginConstant.Openshift) as? KubernetesPluginExtension
         val app = parseValue(extension?.application, application, "application")
         val image = parseValue(extension?.image, dockerImage, "image")
-        println("${PluginConstant.ANSI_GREEN}Start task: Application: $app, Image = $image${PluginConstant.ANSI_RESET}")
-        checkForClient(Client.oc, "version")
+
+        checkForClient(Client.oc)
+        executeCommand("oc start-build $app --from-dir build\\libs\\${project.name}-${project.version}.jar --follow")
         executeCommand("oc tag $image $app:latest")
     }
 }
