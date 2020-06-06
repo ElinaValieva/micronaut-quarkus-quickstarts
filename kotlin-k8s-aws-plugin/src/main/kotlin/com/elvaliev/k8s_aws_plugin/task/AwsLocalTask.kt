@@ -25,8 +25,6 @@ open class AwsLocalTask : DeployDefaultTask() {
     fun run() {
         val extension = project.extensions.findByName(Aws) as? AwsPluginExtension
         var template = parseValue(extension?.template, samTemplate, "template")
-
-        println("${ANSI_GREEN}Start task: $template${ANSI_RESET}")
         checkForClient(Client.sam)
         template?.let {
             template = retrieveFile(it)
@@ -34,13 +32,14 @@ open class AwsLocalTask : DeployDefaultTask() {
             val process = ProcessBuilder(arg).directory(project.projectDir).start()
 
             val bufferedReader = BufferedReader(InputStreamReader(process.errorStream))
-            process.waitFor(5, TimeUnit.SECONDS)
+            process.waitFor(10, TimeUnit.SECONDS)
             while (bufferedReader.ready()) {
                 val line = bufferedReader.readLine().replace("(Press CTRL+C to quit)", "")
                 println("${ANSI_GREEN}$line${ANSI_RESET}")
             }
 
             println("${ANSI_RED}\n\n >> KEY PRESS TO QUIT${ANSI_RESET}")
+
             val scanner = Scanner(System.`in`)
             if (scanner.hasNext())
                 process.destroy()

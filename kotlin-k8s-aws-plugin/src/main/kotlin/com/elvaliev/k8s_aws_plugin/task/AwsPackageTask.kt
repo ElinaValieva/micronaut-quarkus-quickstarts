@@ -1,6 +1,5 @@
 package com.elvaliev.k8s_aws_plugin.task
 
-import com.elvaliev.k8s_aws_plugin.PluginConstant
 import com.elvaliev.k8s_aws_plugin.PluginConstant.Companion.Aws
 import com.elvaliev.k8s_aws_plugin.extension.AwsPluginExtension
 import org.gradle.api.tasks.Input
@@ -31,7 +30,6 @@ open class AwsPackageTask : DeployDefaultTask() {
         var template = parseValue(extension?.template, samTemplate, "template")
         val bucket = parseValue(extension?.bucket, s3Bucket, "bucket")
         val stack = parseValue(extension?.stack, stackName, "stack")
-        println("${PluginConstant.ANSI_GREEN}Start task: Template = $template, Bucket = $bucket, Stack name = $stack${PluginConstant.ANSI_RESET}")
         checkForClient(Client.sam)
         template?.let {
             template = retrieveFile(it)
