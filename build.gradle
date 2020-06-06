@@ -1,3 +1,5 @@
+import org.apache.tools.ant.taskdefs.condition.Os
+
 plugins {
     id 'java'
 }
@@ -13,4 +15,17 @@ repositories {
 
 dependencies {
     testCompile group: 'junit', name: 'junit', version: '4.12'
+}
+
+task pluginTest {
+    doLast {
+        if (Os.isFamily(Os.FAMILY_WINDOWS))
+            project.exec {
+                commandLine("cmd", "/c", "echo from windows")
+            }
+        else
+            project.exec {
+                commandLine("sh", "-c", "echo from linux")
+            }
+    }
 }
