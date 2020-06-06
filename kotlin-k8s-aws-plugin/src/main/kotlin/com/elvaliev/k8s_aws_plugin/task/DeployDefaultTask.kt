@@ -15,7 +15,7 @@ open class DeployDefaultTask : DefaultTask() {
 
     fun checkForClient(client: Client, commandArg: String = "--help") {
         val process = ProcessBuilder(createCommandLineArgs("$client $commandArg"))
-            .directory(project.projectDir).start()
+                .directory(project.projectDir).start()
 
         val bufferedReader = BufferedReader(InputStreamReader(process.errorStream))
         process.waitFor(3, TimeUnit.SECONDS)
@@ -38,7 +38,7 @@ open class DeployDefaultTask : DefaultTask() {
                 if (Os.isFamily(Os.FAMILY_WINDOWS))
                     commandLine("cmd", "/c", command)
                 else
-                    commandLine(command)
+                    commandLine("sh", "-c", command)
             }
         } catch (e: Exception) {
             println(e)
@@ -51,7 +51,7 @@ open class DeployDefaultTask : DefaultTask() {
 
         if (Os.isFamily(Os.FAMILY_WINDOWS))
             return listOf("cmd", "/c") + args
-        return args
+        return listOf("sh", "-c") + args
     }
 
     fun parseValue(valueFromExtension: String?, valueFromCommandLine: String?, parameterName: String): String? {
