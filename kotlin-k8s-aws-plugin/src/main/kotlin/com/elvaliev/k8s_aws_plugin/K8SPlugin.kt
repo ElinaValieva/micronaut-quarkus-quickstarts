@@ -52,7 +52,7 @@ class K8SPlugin : Plugin<Project> {
         project.allprojects {
             tasks.findByName("build")?.let {
                 tasks.all {
-                    if (arrayListOf(Kubernetes, Openshift, Aws).contains(group)) {
+                    if (arrayListOf(Kubernetes, Openshift, Aws).contains(group) && !project.buildDir.exists()) {
                         dependsOn(it)
                     }
                 }
