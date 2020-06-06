@@ -1,7 +1,5 @@
 package com.elvaliev.k8s_aws_plugin.task
 
-import com.elvaliev.k8s_aws_plugin.PluginConstant.Companion.ANSI_GREEN
-import com.elvaliev.k8s_aws_plugin.PluginConstant.Companion.ANSI_RESET
 import com.elvaliev.k8s_aws_plugin.PluginConstant.Companion.Kubernetes
 import com.elvaliev.k8s_aws_plugin.extension.KubernetesPluginExtension
 import org.gradle.api.tasks.Input
@@ -14,7 +12,7 @@ open class KubernetesDeployTask : DeployDefaultTask() {
     @Input
     @Optional
     @Option(option = "application", description = "Application name")
-    var application: String? = null
+    var application: String? = project.name
 
     @Input
     @Optional
@@ -36,16 +34,16 @@ open class KubernetesDeployTask : DeployDefaultTask() {
     fun run() {
         val extension = project.extensions.findByName(Kubernetes) as? KubernetesPluginExtension
         val app = parseValue(extension?.application, application, "application")
-        val template = parseValue(extension?.path, templatePath, "template")
+        var template = parseValue(extension?.path, templatePath, "template")
         val image = parseValue(extension?.image, dockerImage, "image")
         val port = parseValue(extension?.port, port, "port")
-        println("${ANSI_GREEN}Start task: Application: $app, Template: $template, Image = $image, Port = $port${ANSI_RESET}")
         checkForClient(Client.kubectl)
         template?.let {
-            checkFile(it)
-            executeCommand("kubectl create deployment $app --image=$image")
-            executeCommand("kubectl create -f $template --record --save-config")
-            executeCommand("kubectl expose deployment $app --type=LoadBalancer --port=$port")
+            template = retrieveFile(it)
+            executeCommand("kubectl create deployment $app --image=$image", continueOnError = true)
+            executeCommand("kubectl create -f $template --record --save-config", continueOnError = true)
+            executeCommand("kubectl expose deployment $app --type=LoadBalancer --port=$port", continueOnError = true)
+            executeCommand("kubectl get routes $app")
         }
     }
 

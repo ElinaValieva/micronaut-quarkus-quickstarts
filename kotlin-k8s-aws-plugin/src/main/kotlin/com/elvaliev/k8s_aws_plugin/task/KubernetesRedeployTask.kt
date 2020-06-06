@@ -12,7 +12,7 @@ open class KubernetesRedeployTask : DeployDefaultTask() {
     @Input
     @Optional
     @Option(option = "application", description = "Application name")
-    var application: String? = null
+    var application: String? = project.name
 
     @Input
     @Optional
@@ -24,7 +24,6 @@ open class KubernetesRedeployTask : DeployDefaultTask() {
         val extension = project.extensions.findByName(PluginConstant.Kubernetes) as? KubernetesPluginExtension
         val app = parseValue(extension?.application, application, "application")
         val image = parseValue(extension?.image, dockerImage, "image")
-        println("${PluginConstant.ANSI_GREEN}Start task: Application: $app, Image = $image${PluginConstant.ANSI_RESET}")
         checkForClient(Client.kubectl)
         executeCommand("kubectl set image deployment/$app  $app=$image")
     }
