@@ -37,7 +37,7 @@ open class OpenshiftDeployTask : DeployDefaultTask() {
             executeCommand("oc start-build $app --from-dir build\\libs\\${project.name}-${project.version}.jar --follow")
             executeCommand("oc expose svc/$app")
             executeCommand("oc tag $image $app:latest")
-            executeCommand("oc get route $app")
+            executeCommand("oc get route $app -o jsonpath --template={.spec.host}")
         }
     }
 }

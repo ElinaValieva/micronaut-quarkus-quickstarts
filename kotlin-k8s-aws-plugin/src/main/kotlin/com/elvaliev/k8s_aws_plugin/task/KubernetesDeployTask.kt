@@ -43,8 +43,7 @@ open class KubernetesDeployTask : DeployDefaultTask() {
             executeCommand("kubectl create deployment $app --image=$image", continueOnError = true)
             executeCommand("kubectl create -f $template --record --save-config", continueOnError = true)
             executeCommand("kubectl expose deployment $app --type=LoadBalancer --port=$port", continueOnError = true)
-            executeCommand("kubectl get routes $app")
+            executeCommand("kubectl get routes $app -o jsonpath --template={.spec.host}")
         }
     }
-
 }
