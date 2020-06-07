@@ -6,15 +6,17 @@ import com.elvaliev.k8s_aws_plugin.PluginConstant.Companion.AwsPackage
 import com.elvaliev.k8s_aws_plugin.PluginConstant.Companion.AwsTaskDescription
 import com.elvaliev.k8s_aws_plugin.PluginConstant.Companion.Kubernetes
 import com.elvaliev.k8s_aws_plugin.PluginConstant.Companion.KubernetesDeploy
-import com.elvaliev.k8s_aws_plugin.PluginConstant.Companion.KubernetesRedeploy
+import com.elvaliev.k8s_aws_plugin.PluginConstant.Companion.KubernetesGroup
 import com.elvaliev.k8s_aws_plugin.PluginConstant.Companion.KubernetesTaskDescription
 import com.elvaliev.k8s_aws_plugin.PluginConstant.Companion.Openshift
 import com.elvaliev.k8s_aws_plugin.PluginConstant.Companion.OpenshiftDeploy
-import com.elvaliev.k8s_aws_plugin.PluginConstant.Companion.OpenshiftRedeploy
 import com.elvaliev.k8s_aws_plugin.PluginConstant.Companion.OpenshiftTaskDescription
 import com.elvaliev.k8s_aws_plugin.extension.AwsPluginExtension
 import com.elvaliev.k8s_aws_plugin.extension.KubernetesPluginExtension
-import com.elvaliev.k8s_aws_plugin.task.*
+import com.elvaliev.k8s_aws_plugin.task.AwsLocalTask
+import com.elvaliev.k8s_aws_plugin.task.AwsPackageTask
+import com.elvaliev.k8s_aws_plugin.task.KubernetesTask
+import com.elvaliev.k8s_aws_plugin.task.OpenshiftTask
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 
@@ -33,26 +35,18 @@ class K8SPlugin : Plugin<Project> {
         awsPackage.group = Aws
         awsPackage.description = AwsTaskDescription
 
-        val kubernetesDeploy = project.tasks.create(KubernetesDeploy, KubernetesDeployTask::class.java)
-        kubernetesDeploy.group = Kubernetes
+        val kubernetesDeploy = project.tasks.create(KubernetesDeploy, KubernetesTask::class.java)
+        kubernetesDeploy.group = KubernetesGroup
         kubernetesDeploy.description = KubernetesTaskDescription
 
-        val kubernetesRedeploy = project.tasks.create(KubernetesRedeploy, KubernetesRedeployTask::class.java)
-        kubernetesRedeploy.group = Kubernetes
-        kubernetesRedeploy.description = KubernetesTaskDescription
-
-        val openshiftDeploy = project.tasks.create(OpenshiftDeploy, OpenshiftDeployTask::class.java)
-        openshiftDeploy.group = Openshift
+        val openshiftDeploy = project.tasks.create(OpenshiftDeploy, OpenshiftTask::class.java)
+        openshiftDeploy.group = KubernetesGroup
         openshiftDeploy.description = OpenshiftTaskDescription
-
-        val openshiftRedeploy = project.tasks.create(OpenshiftRedeploy, OpenshiftRedeployTask::class.java)
-        openshiftRedeploy.group = Openshift
-        openshiftRedeploy.description = OpenshiftTaskDescription
 
         project.allprojects {
             tasks.findByName("build")?.let {
                 tasks.all {
-                    if (arrayListOf(Kubernetes, Openshift, Aws).contains(group) && !project.buildDir.exists()) {
+                    if (arrayListOf(Kubernetes, Aws).contains(group) && !project.buildDir.exists()) {
                         dependsOn(it)
                     }
                 }
