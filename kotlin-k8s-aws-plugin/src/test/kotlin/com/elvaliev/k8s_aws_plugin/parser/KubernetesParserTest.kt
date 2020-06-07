@@ -2,6 +2,7 @@ package com.elvaliev.k8s_aws_plugin.parser
 
 import org.gradle.api.GradleException
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertThrows
 import org.junit.Ignore
 import org.junit.Test
 
@@ -31,7 +32,6 @@ class KubernetesParserTest {
     }
 
     @Test
-    @Ignore
     fun parseJsonFormatKubernetesFile() {
         val path = KubernetesParserTest::class.java.classLoader.getResource("kubernetes.json")?.path
         path?.let {
@@ -44,7 +44,6 @@ class KubernetesParserTest {
     }
 
     @Test
-    @Ignore
     fun parseJsonFormatOpenshiftFile() {
         val path = KubernetesParserTest::class.java.classLoader.getResource("openshift.json")?.path
         path?.let {

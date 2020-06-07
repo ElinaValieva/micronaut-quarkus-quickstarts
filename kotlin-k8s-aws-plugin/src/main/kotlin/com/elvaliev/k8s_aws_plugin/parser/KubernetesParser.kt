@@ -9,7 +9,7 @@ class KubernetesParser {
 
     fun parseFile(filePath: String): KubernetesTemplate {
         val kubernetesTemplate = KubernetesTemplate()
-        readFile(filePath).split("---")
+        parseFileConfigs(filePath)
                 .filter { fileInput -> fileInput.isNotEmpty() }
                 .forEach { fileInput ->
                     val mapper = ObjectMapper(YAMLFactory())
@@ -36,8 +36,12 @@ class KubernetesParser {
         return openshiftConfiguration.metaData?.name
     }
 
-    private fun readFile(fileName: String): String {
-        return File(fileName).inputStream().readBytes().toString(Charsets.UTF_8)
+    private fun parseFileConfigs(fileName: String): List<String> {
+        val file = File(fileName)
+        var fileContent = file.inputStream().readBytes().toString(Charsets.UTF_8)
+        if (file.extension == "json")
+            fileContent = fileContent.replace("}{", "}---{")
+        return fileContent.split("---")
     }
 
     private fun getTargetPort(openshiftConfiguration: OpenshiftConfiguration): String? {
