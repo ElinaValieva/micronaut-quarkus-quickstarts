@@ -1,6 +1,7 @@
 package com.elvaliev.k8s_aws_plugin.task
 
 import com.elvaliev.k8s_aws_plugin.PluginConstant
+import com.elvaliev.k8s_aws_plugin.parser.KubernetesParser
 import org.apache.tools.ant.taskdefs.condition.Os
 import org.gradle.api.DefaultTask
 import org.gradle.api.GradleException
@@ -16,7 +17,7 @@ open class DeployDefaultTask : DefaultTask() {
 
     fun checkForClient(client: Client, commandArg: String = "--help") {
         val process = ProcessBuilder(createCommandLineArgs("$client $commandArg"))
-                .directory(project.projectDir).start()
+            .directory(project.projectDir).start()
 
         val bufferedReader = BufferedReader(InputStreamReader(process.errorStream))
         process.waitFor(3, TimeUnit.SECONDS)
@@ -31,8 +32,8 @@ open class DeployDefaultTask : DefaultTask() {
 
     fun retrieveFile(filePath: String): String {
         if (!project.file(filePath).exists()) {
-            if (project.file("build\\$filePath").exists()) {
-                return "build/$filePath"
+            if (project.file("build\\kubernetes\\$filePath").exists()) {
+                return "build/kubernetes/$filePath"
             }
             throw GradleException("File doesn't exist by provided path: $filePath")
         }
@@ -49,10 +50,24 @@ open class DeployDefaultTask : DefaultTask() {
                     commandLine("sh", "-c", command)
             }
         } catch (e: Exception) {
-            println(e)
             if (!continueOnError)
-                throw GradleException("Error was occupied: $e")
+                throw GradleException("Error $e was occupied when executing $command")
         }
+    }
+
+    fun checkDeployments(command: String): Boolean {
+        val process = ProcessBuilder(createCommandLineArgs(command))
+            .directory(project.projectDir).start()
+
+        val bufferedReader = BufferedReader(InputStreamReader(process.errorStream))
+        process.waitFor(3, TimeUnit.SECONDS)
+        while (bufferedReader.ready()) {
+            process.destroy()
+            return false
+        }
+
+        process.destroy()
+        return true
     }
 
     fun createCommandLineArgs(command: String): List<String> {
@@ -71,5 +86,11 @@ open class DeployDefaultTask : DefaultTask() {
             }
             else -> valueFromExtension
         }
+    }
+
+    fun getKubernetesTemplate(template: String): KubernetesParser.KubernetesTemplate {
+        val templatePath = retrieveFile(template)
+        val openShiftParser = KubernetesParser()
+        return openShiftParser.parseFile("${project.projectDir.path}\\$templatePath")
     }
 }
