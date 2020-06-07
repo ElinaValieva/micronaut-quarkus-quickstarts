@@ -1,0 +1,150 @@
+---
+apiVersion: "v1"
+kind: "ServiceAccount"
+metadata:
+  annotations:
+    app.quarkus.io/build-timestamp: "2020-06-06 - 12:40:57 +0000"
+    app.openshift.io/vcs-url: "https://github.com/ElinaValieva/micronaut-quickstarts.git"
+    app.quarkus.io/commit-id: "f4923713550d5529fb46d5cb023346da93faea1d"
+    app.quarkus.io/vcs-url: "https://github.com/ElinaValieva/micronaut-quickstarts.git"
+  labels:
+    app.kubernetes.io/name: "quarkus-quickstart"
+    app.kubernetes.io/version: "latest"
+    app.openshift.io/runtime: "quarkus"
+  name: "quarkus-quickstart"
+---
+apiVersion: "v1"
+kind: "Service"
+metadata:
+  annotations:
+    app.quarkus.io/build-timestamp: "2020-06-06 - 12:40:57 +0000"
+    app.openshift.io/vcs-url: "https://github.com/ElinaValieva/micronaut-quickstarts.git"
+    app.quarkus.io/commit-id: "f4923713550d5529fb46d5cb023346da93faea1d"
+    app.quarkus.io/vcs-url: "https://github.com/ElinaValieva/micronaut-quickstarts.git"
+  labels:
+    app.kubernetes.io/name: "quarkus-quickstart"
+    app.kubernetes.io/version: "latest"
+    app.openshift.io/runtime: "quarkus"
+  name: "quarkus-quickstart"
+spec:
+  ports:
+    - name: "http"
+      port: 8090
+      targetPort: 8090
+  selector:
+    app.kubernetes.io/name: "quarkus-quickstart"
+    app.kubernetes.io/version: "latest"
+  type: "ClusterIP"
+---
+apiVersion: "image.openshift.io/v1"
+kind: "ImageStream"
+metadata:
+  annotations:
+    app.quarkus.io/build-timestamp: "2020-06-06 - 12:40:57 +0000"
+    app.openshift.io/vcs-url: "https://github.com/ElinaValieva/micronaut-quickstarts.git"
+    app.quarkus.io/commit-id: "f4923713550d5529fb46d5cb023346da93faea1d"
+    app.quarkus.io/vcs-url: "https://github.com/ElinaValieva/micronaut-quickstarts.git"
+  labels:
+    app.kubernetes.io/name: "quarkus-quickstart"
+    app.kubernetes.io/version: "latest"
+    app.openshift.io/runtime: "quarkus"
+  name: "quarkus-quickstart"
+spec: {}
+---
+apiVersion: "image.openshift.io/v1"
+kind: "ImageStream"
+metadata:
+  annotations:
+    app.quarkus.io/build-timestamp: "2020-06-06 - 12:40:57 +0000"
+    app.openshift.io/vcs-url: "https://github.com/ElinaValieva/micronaut-quickstarts.git"
+    app.quarkus.io/commit-id: "f4923713550d5529fb46d5cb023346da93faea1d"
+    app.quarkus.io/vcs-url: "https://github.com/ElinaValieva/micronaut-quickstarts.git"
+  labels:
+    app.kubernetes.io/name: "quarkus-quickstart"
+    app.kubernetes.io/version: "latest"
+    app.openshift.io/runtime: "quarkus"
+  name: "s2i-java"
+spec:
+  dockerImageRepository: "fabric8/s2i-java"
+---
+apiVersion: "build.openshift.io/v1"
+kind: "BuildConfig"
+metadata:
+  annotations:
+    app.quarkus.io/build-timestamp: "2020-06-06 - 12:40:57 +0000"
+    app.openshift.io/vcs-url: "https://github.com/ElinaValieva/micronaut-quickstarts.git"
+    app.quarkus.io/commit-id: "f4923713550d5529fb46d5cb023346da93faea1d"
+    app.quarkus.io/vcs-url: "https://github.com/ElinaValieva/micronaut-quickstarts.git"
+  labels:
+    app.kubernetes.io/name: "quarkus-quickstart"
+    app.kubernetes.io/version: "latest"
+    app.openshift.io/runtime: "quarkus"
+  name: "quarkus-quickstart"
+spec:
+  output:
+    to:
+      kind: "ImageStreamTag"
+      name: "quarkus-quickstart:latest"
+  source:
+    binary: {}
+  strategy:
+    sourceStrategy:
+      from:
+        kind: "ImageStreamTag"
+        name: "s2i-java:2.3"
+---
+apiVersion: "apps.openshift.io/v1"
+kind: "DeploymentConfig"
+metadata:
+  annotations:
+    app.quarkus.io/build-timestamp: "2020-06-06 - 12:40:57 +0000"
+    app.openshift.io/vcs-url: "https://github.com/ElinaValieva/micronaut-quickstarts.git"
+    app.quarkus.io/commit-id: "f4923713550d5529fb46d5cb023346da93faea1d"
+    app.quarkus.io/vcs-url: "https://github.com/ElinaValieva/micronaut-quickstarts.git"
+  labels:
+    app.kubernetes.io/name: "quarkus-quickstart"
+    app.kubernetes.io/version: "latest"
+    app.openshift.io/runtime: "quarkus"
+  name: "quarkus-quickstart"
+spec:
+  replicas: 1
+  selector:
+    app.kubernetes.io/name: "quarkus-quickstart"
+    app.kubernetes.io/version: "latest"
+  template:
+    metadata:
+      annotations:
+        app.quarkus.io/build-timestamp: "2020-06-06 - 12:40:57 +0000"
+        app.openshift.io/vcs-url: "https://github.com/ElinaValieva/micronaut-quickstarts.git"
+        app.quarkus.io/commit-id: "f4923713550d5529fb46d5cb023346da93faea1d"
+        app.quarkus.io/vcs-url: "https://github.com/ElinaValieva/micronaut-quickstarts.git"
+      labels:
+        app.kubernetes.io/name: "quarkus-quickstart"
+        app.kubernetes.io/version: "latest"
+        app.openshift.io/runtime: "quarkus"
+    spec:
+      containers:
+        - env:
+            - name: "KUBERNETES_NAMESPACE"
+              valueFrom:
+                fieldRef:
+                  fieldPath: "metadata.namespace"
+            - name: "JAVA_APP_JAR"
+              value: "/deployments/quarkus-quickstart-1.0.0-runner.jar"
+          image: "docker.io/elvaliev/quarkus-quickstart:latest"
+          imagePullPolicy: "Always"
+          name: "quarkus-quickstart"
+          ports:
+            - containerPort: 8090
+              name: "http"
+              protocol: "TCP"
+      serviceAccount: "quarkus-quickstart"
+  triggers:
+    - imageChangeParams:
+        automatic: true
+        containerNames:
+          - "quarkus-quickstart"
+        from:
+          kind: "ImageStreamTag"
+          name: "quarkus-quickstart:1.0.0"
+      type: "ImageChange"

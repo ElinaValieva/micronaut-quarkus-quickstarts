@@ -6,7 +6,7 @@ plugins {
 }
 
 group = "com.elvaliev"
-version = "1.0.3"
+version = "2.0.0"
 
 repositories {
     mavenCentral()
@@ -14,6 +14,7 @@ repositories {
 
 dependencies {
     implementation(kotlin("stdlib-jdk8"))
+    implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.11.0")
     compileOnly(localGroovy())
     compileOnly(gradleApi())
     testImplementation("junit:junit:4.13")
