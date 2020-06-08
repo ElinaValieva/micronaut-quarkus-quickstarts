@@ -11,9 +11,9 @@ class KubernetesParserTest {
         val path = KubernetesParserTest::class.java.classLoader.getResource("kubernetes.yaml")?.path
         path?.let {
             val kubernetesParser = KubernetesParser()
-            val kubernetesTemplate = kubernetesParser.parseFile(path)
-            assertEquals("quarkus-quickstart", kubernetesTemplate.application)
-            assertEquals("8090", kubernetesTemplate.port)
+            val kubernetesTemplate = kubernetesParser.parseTemplate(path)
+            assertEquals("quarkus-quickstart", kubernetesTemplate?.application)
+            assertEquals("8090", kubernetesTemplate?.port)
         }
     }
 
@@ -22,9 +22,9 @@ class KubernetesParserTest {
         val path = KubernetesParserTest::class.java.classLoader.getResource("openshift.yaml")?.path
         path?.let {
             val kubernetesParser = KubernetesParser()
-            val kubernetesTemplate = kubernetesParser.parseFile(path)
-            assertEquals("quarkus-quickstart", kubernetesTemplate.application)
-            assertEquals("quarkus-quickstart:1.0.0", kubernetesTemplate.imageStreamApplication)
+            val kubernetesTemplate = kubernetesParser.parseTemplate(path)
+            assertEquals("quarkus-quickstart", kubernetesTemplate?.application)
+            assertEquals("quarkus-quickstart:1.0.0", kubernetesTemplate?.imageStreamApplication)
         }
     }
 
@@ -33,9 +33,9 @@ class KubernetesParserTest {
         val path = KubernetesParserTest::class.java.classLoader.getResource("kubernetes.json")?.path
         path?.let {
             val kubernetesParser = KubernetesParser()
-            val kubernetesTemplate = kubernetesParser.parseFile(path)
-            assertEquals("quarkus-quickstart", kubernetesTemplate.application)
-            assertEquals("8090", kubernetesTemplate.port)
+            val kubernetesTemplate = kubernetesParser.parseTemplate(path)
+            assertEquals("quarkus-quickstart", kubernetesTemplate?.application)
+            assertEquals("8090", kubernetesTemplate?.port)
         }
     }
 
@@ -44,9 +44,9 @@ class KubernetesParserTest {
         val path = KubernetesParserTest::class.java.classLoader.getResource("openshift.json")?.path
         path?.let {
             val kubernetesParser = KubernetesParser()
-            val kubernetesTemplate = kubernetesParser.parseFile(path)
-            assertEquals("quarkus-quickstart", kubernetesTemplate.application)
-            assertEquals("quarkus-quickstart:1.0.0", kubernetesTemplate.imageStreamApplication)
+            val kubernetesTemplate = kubernetesParser.parseTemplate(path)
+            assertEquals("quarkus-quickstart", kubernetesTemplate?.application)
+            assertEquals("quarkus-quickstart:1.0.0", kubernetesTemplate?.imageStreamApplication)
         }
     }
 
@@ -66,7 +66,7 @@ class KubernetesParserTest {
         val path = KubernetesParserTest::class.java.classLoader.getResource("wrong.yaml")?.path
         path?.let {
             val kubernetesParser = KubernetesParser()
-            kubernetesParser.parseFile(path)
+            kubernetesParser.parseTemplate(path)
         }
     }
 }

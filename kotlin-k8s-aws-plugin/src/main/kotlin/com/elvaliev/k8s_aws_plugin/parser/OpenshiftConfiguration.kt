@@ -54,6 +54,5 @@ class OpenshiftConfiguration {
 
             var targetPort: String? = null
         }
-
     }
 }

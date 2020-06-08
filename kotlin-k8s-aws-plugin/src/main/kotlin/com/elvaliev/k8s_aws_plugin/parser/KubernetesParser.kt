@@ -7,16 +7,6 @@ import org.gradle.api.GradleException
 import java.io.File
 
 class KubernetesParser {
-    // TODO: combine two approaches, port for openshift, flag for template - process
-
-    fun parseFile(filePath: String): KubernetesTemplate {
-        val configurations = parseFileConfigs(filePath)
-            .filter { fileInput -> fileInput.isNotEmpty() }
-            .map { fileInput ->
-                configureObjectMapper().readValue(fileInput, OpenshiftConfiguration::class.java)
-            }
-        return parseConfigurations(configurations)
-    }
 
     fun parseTemplate(filePath: String): KubernetesTemplate? {
         val mapper = configureObjectMapper()
@@ -24,8 +14,24 @@ class KubernetesParser {
             readFileContent(filePath),
             OpenshiftTemplate::class.java
         )
-        val dictionary = openshiftTemplate.parameters?.associateBy({ "{${it.name}}" }, { it.value })
-        return openshiftTemplate.objects?.let { parseConfigurations(it, dictionary) }
+
+        return when (openshiftTemplate.kind) {
+            null -> throw GradleException("Unsupported file. Check that file correspond to valid template format")
+            "Template" -> {
+                val dictionary = openshiftTemplate.parameters?.associateBy({ "{${it.name}}" }, { it.value })
+                return openshiftTemplate.objects?.let { parseConfigurations(it, dictionary, template = true) }
+            }
+            else -> parseOpenshiftConfigurations(filePath)
+        }
+    }
+
+    private fun parseOpenshiftConfigurations(filePath: String): KubernetesTemplate {
+        val configurations = parseFileConfigs(filePath)
+            .filter { fileInput -> fileInput.isNotEmpty() }
+            .map { fileInput ->
+                configureObjectMapper().readValue(fileInput, OpenshiftConfiguration::class.java)
+            }
+        return parseConfigurations(configurations)
     }
 
     private fun configureObjectMapper() = ObjectMapper(YAMLFactory())
@@ -35,14 +41,13 @@ class KubernetesParser {
 
     private fun parseConfigurations(
         configurations: List<OpenshiftConfiguration>,
-        dictionary: Map<String, String?>? = null
+        dictionary: Map<String, String?>? = null,
+        template: Boolean = false
     ): KubernetesTemplate {
         val kubernetesTemplate = KubernetesTemplate()
+        kubernetesTemplate.isTemplate = template
 
         configurations.forEach {
-            if (it.kind == null)
-                throw GradleException("Unsupported file. Check that file correspond to valid template format")
-
             if (it.kind == "DeploymentConfig" || it.kind == "Deployment") {
                 kubernetesTemplate.imageStreamApplication = wrap(dictionary, getImage(it))
                 kubernetesTemplate.application = wrap(dictionary, getApplicationName(it))
@@ -94,5 +99,7 @@ class KubernetesParser {
         var imageStreamApplication: String? = null
 
         var port: String? = null
+
+        var isTemplate: Boolean = false
     }
 }
