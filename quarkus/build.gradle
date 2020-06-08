@@ -1,9 +1,11 @@
 buildscript {
     repositories {
         mavenLocal()
+        mavenCentral()
     }
     dependencies {
         classpath 'com.google.cloud.tools:appengine-gradle-plugin:2.2.0'
+        classpath 'com.elvaliev:k8s_aws_plugin:2.0.0'
     }
 }
 
@@ -11,7 +13,7 @@ plugins {
     id 'java'
     id 'io.quarkus' version "${quarkusPluginVersion}"
     id 'org.jetbrains.kotlin.jvm' version "${kotlinVersion}"
-    id "com.elvaliev.k8s_aws_plugin" version "1.0.2"
+    id "com.elvaliev.k8s_aws_plugin" version "1.0.3"
 }
 
 repositories {
@@ -88,23 +90,18 @@ appengine {
  * Prerequisites: kubernetes/openshift extentions
  */
 kubernetes {
-    path = "${project.buildDir}\\kubernetes\\kubernetes.yml"
     image = 'elvaliev/quarkus-quickstart'
-    application = 'quarkus-quickstart'
-    port = 8090
 }
 
 openshift {
-    path = "${project.buildDir}\\kubernetes\\openshift.yml"
-    application = 'quarkus-quickstart'
     image = 'elvaliev/quarkus-quickstart'
 }
 
 if (project.hasProperty("enableAws") && project.property("enableAws") == "true") {
     aws {
-        samTemplate = file("${project.buildDir}\\sam.jvm.yaml")
-        s3Bucket = AWS_BUCKET_NAME
-        stackName = AWS_STACK_NAME
+        template = file("${project.buildDir}\\sam.jvm.yaml")
+        bucket = AWS_BUCKET_NAME
+        stack = AWS_STACK_NAME
     }
 } else {
     configurations {

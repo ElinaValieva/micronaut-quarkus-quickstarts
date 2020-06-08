@@ -20,7 +20,7 @@ plugins {
     id "com.github.johnrengelman.shadow" version "5.2.0"
     id "application"
     id 'com.google.cloud.tools.jib' version '2.3.0'
-    id "com.elvaliev.k8s_aws_plugin" version "1.0.2" apply false
+    id "com.elvaliev.k8s_aws_plugin" version "1.0.3" apply false
     id "jp.classmethod.aws.lambda" version "0.41" apply false
 }
 
@@ -214,15 +214,19 @@ if (project.hasProperty("enableAws") && project.property("enableAws") == "true")
     apply plugin: "com.elvaliev.k8s_aws_plugin"
 
     kubernetes {
-        path = 'k8s/kubernetes.yml'
+        template = 'k8s/kubernetes.yml'
         image = 'elvaliev/micronaut-quickstart'
-        application = 'micronaut-quickstart'
-        port = 8090
     }
 
     openshift {
-        path = 'k8s/openshift.yml'
-        application = 'micronaut-quickstart'
+        template = 'k8s/openshift.yml'
         image = 'elvaliev/micronaut-quickstart'
+    }
+}
+
+task port() {
+    doLast {
+        println(project.properties.get("enableAws"))
+        println(System.getProperty("micronaut.server.port"))
     }
 }
