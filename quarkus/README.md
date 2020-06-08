@@ -17,13 +17,9 @@ Gradle Tasks
   │             ├──── awsLocal 
   │             └──── awsPackage
   │      
-  └─────── kubernetes - Deployment to Kubernetes
-  │             ├──── kubernetesDeploy
-  │             └──── kubernetesRedeploy
-  │     
-  └─────── openshift - Deployment to OpenShift
-                ├──── openshiftDeploy
-                └──── openshiftRedeploy
+  └─────── k8s - Deployment to Kubernetes and OpenShift
+                ├──── kubernetesDeploy
+                └──── openshiftDeploy
 ```
 &nbsp;
 
@@ -61,13 +57,9 @@ gcloud app browse
 
 For creating and deploying on changes application on `OpenShift` used gradle plugin [k8s_aws_plugin](https://github.com/ElinaValieva/micronaut-quickstarts/tree/master/kotlin-k8s-aws-plugin). These scripts could be used directly or run as a gradle tasks (see `openshift` group in gradle tasks).
 
-For creating a new application on Openshift: 
+For deploying (creating a new application or creating new build) on Openshift: 
 ```gradle
 ./gradlew openshiftDeploy
-```
-For redeploying application on Openshift: 
-```gradle
-./gradlew openshiftRedeploy
 ```
 &nbsp;
 
@@ -76,13 +68,9 @@ For redeploying application on Openshift:
 
 For creating and deploying on changes application on `Kubernetes` used gradle plugin [k8s_aws_plugin](https://github.com/ElinaValieva/micronaut-quickstarts/tree/master/kotlin-k8s-aws-plugin). These scripts could be used directly or run as a gradle tasks (see `kubernetes` group in gradle tasks).
 
-For creating a new application on Kubernetes: 
+For deploying (creating a new application or creating new build) on Kubernetes: 
 ```gradle
 ./gradlew kubernetesDeploy
-```
-For redeploying application on Kubernetes: 
-```gradle
-./gradlew kubernetesRedeploy
 ```
 &nbsp;
 
