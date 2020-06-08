@@ -43,16 +43,14 @@ open class OpenshiftTask : DeployDefaultTask() {
         image: String?
     ) {
         executeCommand("oc create -f $template", continueOnError = true)
-        executeCommand("oc start-build $app --from-dir build\\libs\\${project.name}-${project.version}.jar --follow")
-        imageStream?.let {
-            executeCommand("oc tag $image $imageStream")
-        }
+        buildDeployment(app, imageStream, image)
         executeCommand("oc expose svc/$app")
         executeCommand("oc get route $app -o jsonpath --template={.spec.host}")
     }
 
     private fun buildDeployment(app: String?, imageStream: String?, image: String?) {
-        executeCommand("oc start-build $app --from-dir build\\libs\\${project.name}-${project.version}.jar --follow")
+        if (checkBinaryBuild("oc get buildConfig $app -o jsonpath --template={.spec.source.type}"))
+            executeCommand("oc start-build $app --from-dir build\\libs\\${project.name}-${project.version}.jar --follow")
         imageStream?.let {
             executeCommand("oc tag $image $imageStream")
         }

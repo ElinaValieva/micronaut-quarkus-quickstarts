@@ -70,6 +70,28 @@ open class DeployDefaultTask : DefaultTask() {
         return true
     }
 
+    fun checkBinaryBuild(command: String): Boolean {
+        val process = ProcessBuilder(createCommandLineArgs(command))
+            .directory(project.projectDir).start()
+
+        var bufferedReader = BufferedReader(InputStreamReader(process.errorStream))
+        process.waitFor(3, TimeUnit.SECONDS)
+        while (bufferedReader.ready()) {
+            process.destroy()
+            return false
+        }
+
+        bufferedReader = BufferedReader(InputStreamReader(process.inputStream))
+        process.waitFor(3, TimeUnit.SECONDS)
+        while (bufferedReader.ready()) {
+            val sourceType = bufferedReader.readLine()
+            process.destroy()
+            return sourceType == "Binary"
+        }
+
+        return false
+    }
+
     fun createCommandLineArgs(command: String): List<String> {
         val args = command.split(" ")
 
