@@ -11,7 +11,7 @@ open class OpenshiftTask : DeployDefaultTask() {
 
     @Input
     @Optional
-    @Option(option = "path", description = "Custom template file, as default used openshift.yaml")
+    @Option(option = "template", description = "Custom template file, as default used openshift.yaml")
     var templatePath: String = "openshift.yaml"
 
     @Input
@@ -19,40 +19,46 @@ open class OpenshiftTask : DeployDefaultTask() {
     @Option(option = "image", description = "Docker registry reference: <user_name>/<image_name>:<tag>")
     var dockerImage: String? = null
 
+    @Input
+    @Optional
+    @Option(option = "jar", description = "Executable java jar as default build/libs/*.jar")
+    var jar: String = "libs\\${project.name}-${project.version}.jar"
+
     @TaskAction
     fun run() {
         val extension = project.extensions.findByName(Openshift) as? KubernetesPluginExtension
-        val template = parseValue(extension?.path, templatePath, "template")
-        val image = parseValue(extension?.image, dockerImage, "image")
+        templatePath = retrieveFile(parseValue(extension?.template, templatePath, "template"))
+        dockerImage = parseValue(extension?.image, dockerImage, "image")
+        jar = parseValue(extension?.jar, jar, "jar")
         checkForClient(Client.oc)
-        template?.let {
-            val kubernetesTemplate = getKubernetesTemplate(template)
-            val app = parseValue(kubernetesTemplate.application, project.name, "application")
-            val imageStream = kubernetesTemplate.imageStreamApplication
-            when (checkDeployments("oc get  deploymentConfig $app")) {
-                true -> buildDeployment(app, imageStream, image)
-                false -> createDeployment(template, app, imageStream, image)
-            }
+        val kubernetesTemplate = getKubernetesTemplate(templatePath)
+        val app = parseValue(kubernetesTemplate?.application, project.name, "application")
+        val imageStream = kubernetesTemplate?.imageStreamApplication
+        when (checkDeployments("oc get  deploymentConfig $app")) {
+            true -> buildDeployment(app, imageStream)
+            false -> kubernetesTemplate?.isTemplate?.let { createDeployment(app, imageStream, it) }
         }
     }
 
     private fun createDeployment(
-        template: String?,
         app: String?,
         imageStream: String?,
-        image: String?
+        isTemplate: Boolean
     ) {
-        executeCommand("oc create -f $template", continueOnError = true)
-        buildDeployment(app, imageStream, image)
-        executeCommand("oc expose svc/$app")
+        if (isTemplate)
+            executeCommand("oc process -f $templatePath | oc apply -f-")
+        else
+            executeCommand("oc create -f $templatePath", continueOnError = true)
+        buildDeployment(app, imageStream)
+        executeCommand("oc expose svc/$app", continueOnError = true)
         executeCommand("oc get route $app -o jsonpath --template={.spec.host}")
     }
 
-    private fun buildDeployment(app: String?, imageStream: String?, image: String?) {
+    private fun buildDeployment(app: String?, imageStream: String?) {
         if (checkBinaryBuild("oc get buildConfig $app -o jsonpath --template={.spec.source.type}"))
-            executeCommand("oc start-build $app --from-dir build\\libs\\${project.name}-${project.version}.jar --follow")
+            executeCommand("oc start-build $app --from-dir build\\$jar --follow")
         imageStream?.let {
-            executeCommand("oc tag $image $imageStream")
+            executeCommand("oc tag $dockerImage $imageStream")
         }
     }
 }

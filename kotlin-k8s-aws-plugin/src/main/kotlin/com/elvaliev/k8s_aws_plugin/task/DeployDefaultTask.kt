@@ -100,7 +100,7 @@ open class DeployDefaultTask : DefaultTask() {
         return listOf("sh", "-c") + args
     }
 
-    fun parseValue(valueFromExtension: String?, valueFromCommandLine: String?, parameterName: String): String? {
+    fun parseValue(valueFromExtension: String?, valueFromCommandLine: String?, parameterName: String): String {
         return when (valueFromExtension == null) {
             true -> when (valueFromCommandLine == null) {
                 true -> throw GradleException("$parameterName was not defined")
@@ -110,9 +110,9 @@ open class DeployDefaultTask : DefaultTask() {
         }
     }
 
-    fun getKubernetesTemplate(template: String): KubernetesParser.KubernetesTemplate {
+    fun getKubernetesTemplate(template: String): KubernetesParser.KubernetesTemplate? {
         val templatePath = retrieveFile(template)
         val openShiftParser = KubernetesParser()
-        return openShiftParser.parseFile("${project.projectDir.path}\\$templatePath")
+        return openShiftParser.parseTemplate("${project.projectDir.path}\\$templatePath")
     }
 }

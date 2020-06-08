@@ -27,14 +27,11 @@ open class AwsPackageTask : DeployDefaultTask() {
     @TaskAction
     fun run() {
         val extension = project.extensions.findByName(Aws) as? AwsPluginExtension
-        var template = parseValue(extension?.template, samTemplate, "template")
-        val bucket = parseValue(extension?.bucket, s3Bucket, "bucket")
-        val stack = parseValue(extension?.stack, stackName, "stack")
+        samTemplate = retrieveFile(parseValue(extension?.template, samTemplate, "template"))
+        s3Bucket = parseValue(extension?.bucket, s3Bucket, "bucket")
+        stackName = parseValue(extension?.stack, stackName, "stack")
         checkForClient(Client.sam)
-        template?.let {
-            template = retrieveFile(it)
-            executeCommand("sam package --template-file $template --output-template-file packaged.yaml --s3-bucket $bucket")
-            executeCommand("sam deploy --template-file packaged.yaml --capabilities CAPABILITY_IAM --stack-name $stack")
-        }
+        executeCommand("sam package --template-file $samTemplate --output-template-file packaged.yaml --s3-bucket $s3Bucket")
+        executeCommand("sam deploy --template-file packaged.yaml --capabilities CAPABILITY_IAM --stack-name $stackName")
     }
 }

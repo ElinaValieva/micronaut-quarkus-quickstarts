@@ -11,7 +11,7 @@ open class KubernetesTask : DeployDefaultTask() {
 
     @Input
     @Optional
-    @Option(option = "path", description = "Custom template file, as default used kubernetes.yaml")
+    @Option(option = "template", description = "Custom template file, as default used kubernetes.yaml")
     var templatePath: String = "kubernetes.yaml"
 
     @Input
@@ -23,34 +23,27 @@ open class KubernetesTask : DeployDefaultTask() {
     @TaskAction
     fun run() {
         val extension = project.extensions.findByName(Kubernetes) as? KubernetesPluginExtension
-        val template = parseValue(extension?.path, templatePath, "template")
-        val image = parseValue(extension?.image, dockerImage, "image")
+        templatePath = retrieveFile(parseValue(extension?.template, templatePath, "template"))
+        dockerImage = parseValue(extension?.image, dockerImage, "image")
         checkForClient(Client.kubectl)
-        template?.let {
-            val kubernetesTemplate = getKubernetesTemplate(it)
-            val app = parseValue(kubernetesTemplate.application, project.name, "application")
-            val port = parseValue(kubernetesTemplate.port, "8080", "port")
+        val kubernetesTemplate = getKubernetesTemplate(templatePath)
+        val app = parseValue(kubernetesTemplate?.application, project.name, "application")
+        val port = parseValue(kubernetesTemplate?.port, "8080", "port")
 
-            when (checkDeployments("kubectl get deployment $app")) {
-                true -> buildDeployment(app, image)
-                false -> createDeployment(app, image, template, port)
-            }
+        when (checkDeployments("kubectl get deployment $app")) {
+            true -> buildDeployment(app)
+            false -> createDeployment(app, port)
         }
     }
 
-    private fun createDeployment(
-        app: String?,
-        image: String?,
-        template: String?,
-        port: String?
-    ) {
-        executeCommand("kubectl create deployment $app --image=$image", continueOnError = true)
-        executeCommand("kubectl create -f $template --record --save-config", continueOnError = true)
+    private fun createDeployment(app: String?, port: String?) {
+        executeCommand("kubectl create deployment $app --image=$dockerImage", continueOnError = true)
+        executeCommand("kubectl create -f $templatePath --record --save-config", continueOnError = true)
         executeCommand("kubectl expose deployment $app --type=LoadBalancer --port=$port", continueOnError = true)
         executeCommand("kubectl get routes $app -o jsonpath --template={.spec.host}")
     }
 
-    private fun buildDeployment(app: String?, image: String?) {
-        executeCommand("kubectl set image deployment/$app  $app=$image")
+    private fun buildDeployment(app: String?) {
+        executeCommand("kubectl set image deployment/$app  $app=$dockerImage")
     }
 }
