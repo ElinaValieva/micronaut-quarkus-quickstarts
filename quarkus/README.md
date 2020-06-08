@@ -55,7 +55,7 @@ gcloud app browse
 ## OpenShift 🚩
 **Prerequisites:** `OpenShift Client` - login with client. 
 
-For creating and deploying on changes application on `OpenShift` used gradle plugin [k8s_aws_plugin](https://github.com/ElinaValieva/micronaut-quickstarts/tree/master/kotlin-k8s-aws-plugin). These scripts could be used directly or run as a gradle tasks (see `openshift` group in gradle tasks).
+For creating and deploying on changes application on `OpenShift` used gradle plugin [k8s_aws_plugin](https://github.com/ElinaValieva/micronaut-quickstarts/tree/master/kotlin-k8s-aws-plugin). These scripts could be used directly or run as a gradle tasks (see `k8s` group in gradle tasks).
 
 For deploying (creating a new application or creating new build) on Openshift: 
 ```gradle
@@ -66,7 +66,7 @@ For deploying (creating a new application or creating new build) on Openshift:
 ## Kubernetes 🚩
 **Prerequisites:** `Kubernetes Client` - login with client.
 
-For creating and deploying on changes application on `Kubernetes` used gradle plugin [k8s_aws_plugin](https://github.com/ElinaValieva/micronaut-quickstarts/tree/master/kotlin-k8s-aws-plugin). These scripts could be used directly or run as a gradle tasks (see `kubernetes` group in gradle tasks).
+For creating and deploying on changes application on `Kubernetes` used gradle plugin [k8s_aws_plugin](https://github.com/ElinaValieva/micronaut-quickstarts/tree/master/kotlin-k8s-aws-plugin). These scripts could be used directly or run as a gradle tasks (see `k8s` group in gradle tasks).
 
 For deploying (creating a new application or creating new build) on Kubernetes: 
 ```gradle
