@@ -2,8 +2,6 @@ package com.elvaliev.k8s_aws_plugin.parser
 
 import org.gradle.api.GradleException
 import org.junit.Assert.assertEquals
-import org.junit.Assert.assertThrows
-import org.junit.Ignore
 import org.junit.Test
 
 class KubernetesParserTest {
@@ -14,7 +12,6 @@ class KubernetesParserTest {
         path?.let {
             val kubernetesParser = KubernetesParser()
             val kubernetesTemplate = kubernetesParser.parseFile(path)
-            println(kubernetesTemplate.toString())
             assertEquals("quarkus-quickstart", kubernetesTemplate.application)
             assertEquals("8090", kubernetesTemplate.port)
         }
@@ -37,7 +34,6 @@ class KubernetesParserTest {
         path?.let {
             val kubernetesParser = KubernetesParser()
             val kubernetesTemplate = kubernetesParser.parseFile(path)
-            println(kubernetesTemplate.toString())
             assertEquals("quarkus-quickstart", kubernetesTemplate.application)
             assertEquals("8090", kubernetesTemplate.port)
         }
@@ -49,9 +45,19 @@ class KubernetesParserTest {
         path?.let {
             val kubernetesParser = KubernetesParser()
             val kubernetesTemplate = kubernetesParser.parseFile(path)
-            println(kubernetesTemplate.toString())
             assertEquals("quarkus-quickstart", kubernetesTemplate.application)
             assertEquals("quarkus-quickstart:1.0.0", kubernetesTemplate.imageStreamApplication)
+        }
+    }
+
+    @Test
+    fun parseYamlOpenshiftTemplate() {
+        val path = KubernetesParserTest::class.java.classLoader.getResource("template.yaml")?.path
+        val kubernetesParser = KubernetesParser()
+        path?.let {
+            val kubernetesTemplate = kubernetesParser.parseTemplate(it)
+            assertEquals("quarkus-blog-api", kubernetesTemplate?.application)
+            assertEquals("blog-api:latest", kubernetesTemplate?.imageStreamApplication)
         }
     }
 
