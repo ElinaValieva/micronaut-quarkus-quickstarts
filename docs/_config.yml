@@ -17,7 +17,6 @@ author:
 plugins:
   - jekyll-feed
 
-
 # Custom vars
-version:             1.0.3
-google_analytics_id: #UA-XXXX-Y
+github:
+  repo:              https://github.com/ElinaValieva/micronaut-quickstarts
