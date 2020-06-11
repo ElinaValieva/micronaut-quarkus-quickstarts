@@ -1,10 +1,6 @@
 ---
-layout: post
-title: Quarkus Quickstart Project
-categories: junk
-author:
-- Elina Valieva
-meta: "Springfield"
+layout: page
+title: Quarkus
 ---
 > Simple `hello-world` project with different platform deployment using gradle tasks: 
 

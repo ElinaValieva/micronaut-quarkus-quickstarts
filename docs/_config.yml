@@ -1,58 +1,23 @@
-title: QuickStart
+# Setup
+title:               QuickStart
+tagline:             'Hello-World Deployment by Gradle tasks'
+description:         'Deploy your application by using Gradle tasks'
+url:                 http://elina.valieva.quickstart.com
+baseurl:             ''
+paginate:            5
+permalink:           pretty
+
+# About/contact
 author:
-  name: Elina Valieva
-  email: Elina.Valieva@t-systems.com
-description: > # this means to ignore newlines until "show_excerpts:"
-  Micronaut and Quarkus Quickstarts - Simple hello-world projects
-  with different platform deployment by using gradle tasks
+  name:              Elina Valieva
+  url:               https://github.com/ElinaValieva
+  email:             Elina.Valieva@t-systems.com
 
-show_excerpts: false # set to true to show excerpts on the homepage
-
-# Minima date format
-# refer to https://shopify.github.io/liquid/filters/date/ if you want to customize this
-minima:
-  date_format: "%b %-d, %Y"
-
-  # generate social links in footer
-  social_links:
-    github:  ElinaValieva
-    # devto: jekyll
-    # dribbble: jekyll
-    # facebook: jekyll
-    # flickr:   jekyll
-    # instagram: jekyll
-    # linkedin: jekyll
-    # pinterest: jekyll
-    # youtube: jekyll
-    # youtube_channel: UC8CXR0-3I70i1tfPg1PAE1g
-    # youtube_channel_name: CloudCannon
-    # telegram: jekyll
-    # googleplus: +jekyll
-    # microdotblog: jekyll
-    # keybase: jekyll
-
-    # Mastodon instances
-    # mastodon:
-    # - username: jekyll
-    #   instance: example.com
-    # - username: jekyll2
-    #   instance: example.com
-
-    # GitLab instances
-    # gitlab:
-    # - username: jekyll
-    #   instance: example.com
-    # - username: jekyll2
-    #   instance: example.com
-
-# If you want to link only specific pages in your header, uncomment
-# this and add the path to the pages in order as they should show up
-#header_pages:
-# - about.md
-
-# Build settings
-theme: minima
-
+# Gems
 plugins:
- - jekyll-feed
- - jekyll-seo-tag
+  - jekyll-feed
+
+
+# Custom vars
+version:             1.0.3
+google_analytics_id: #UA-XXXX-Y

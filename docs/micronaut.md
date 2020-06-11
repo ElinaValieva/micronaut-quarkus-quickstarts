@@ -1,10 +1,6 @@
 ---
-layout: post
-title: Micronaut QuickStart Project
-categories: junk
-author:
-- Elina Valieva
-meta: "Springfield"
+layout: page
+title: Micronaut
 ---
 > Simple `hello-world` project with different platform deployment using gradle tasks: 
 

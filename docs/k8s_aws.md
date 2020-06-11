@@ -1,10 +1,6 @@
 ---
-layout: post
-title: K8S AWS Plugin for Gradle
-categories: junk
-author:
-- Elina Valieva
-meta: "Springfield"
+layout: page
+title: K8S AWS Plugin
 ---
 > k8s_aws_plugin - Gradle Plugin to Deploying application on Kubernetes/OpenShift/Aws Lambda
 
