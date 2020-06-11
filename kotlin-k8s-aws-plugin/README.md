@@ -5,7 +5,7 @@
 
 > From `1.0.3` plugin support command options and plugin extensions. 
 
-> Creation and build deployment for application by using templates(as a template or element listing) for Kubernetes and OpenShift using one common command. 
+> From `1.0.3` plugin support creation and build deployment for application by using templates(as a template or element listing) for Kubernetes and OpenShift using one common command. 
 
 ## Prerequisites :exclamation:
 - `OC` - for deploying to OpenShift
@@ -53,9 +53,8 @@ kubernetes {
 }
 ```
 Execute gradle task: **`./gradlew kubernetesDeploy`**
-&nbsp;
 
-#### Using command options
+#### Using command options:
 Execute gradle task: **`./gradlew kubernetesDeploy --template=k8s/kubernetes.yml --image=elvaliev/micronaut-quickstart`**
 
 &nbsp;
@@ -77,9 +76,7 @@ openshift {
 ```
 Execute gradle task: **`./gradlew openshiftDeploy`**
 
-&nbsp;
-
-#### Using command options
+#### Using command options:
 Execute gradle task: **`./gradlew openshiftDeploy --template=k8s/kubernetes.yml --image=elvaliev/micronaut-quickstart`**
 
 &nbsp;
@@ -106,11 +103,12 @@ This will start a docker container that mimics Amazon’s Lambda’s deployment 
 
 Package your lambda: **`./gradlew awsPackage`**
 
-&nbsp;
-
 #### Using command options:
 Start your lambda: **`./gradlew awsLocal --template=build/sam.jvm.yaml`**
 
-Package your lambda: **`./gradlew awsPackage --template=build/sam.jvm.yaml --bucket = AWS_BUCKET_NAME --stack = AWS_STACK_NAME`**
+Package your lambda: 
+```
+./gradlew awsPackage --template=build/sam.jvm.yaml --bucket = AWS_BUCKET_NAME --stack = AWS_STACK_NAME
+```
 
 This plugin runs [sam commands](https://quarkus.io/guides/amazon-lambda-http) to simulating and deploying Lambda.
