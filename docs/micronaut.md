@@ -91,3 +91,72 @@ Browse your application:
 ```batch
 gcloud app browse
 ```
+
+&nbsp;
+
+## Kubernetes/OpenShift
+For deploying to Kubernetes/OpenShift used my plugin [`k8s_aws_plugin`](https://github.com/ElinaValieva/micronaut-quickstarts/tree/master/kotlin-k8s-aws-plugin),
+which used templates or file configuration list (supported `.json` and `.yaml` formats).
+### Template setup
+Define in your project file for OpenShift and/or Kubernetes deployment as a "configuration list":
+```yaml
+    ...
+---
+apiVersion: "v1"
+kind: "Service"
+metadata:
+  ...
+  name: "micronaut-quickstart"
+spec:
+  ports:
+  - name: "http"
+    port: 8090
+    targetPort: 8090
+    ...
+```
+Or "template":
+```yaml
+apiVersion: v1
+kind: Template
+metadata:
+  name: my-template
+objects:
+- kind: DeploymentConfig
+  apiVersion: v1
+  metadata:
+      labels:
+      ...
+```
+### Plugin setup
+Setup plugin configuration in project `build.gradle`:
+```groovy
+plugins {
+                    ...
+    id "com.elvaliev.k8s_aws_plugin" version "1.0.3"
+}
+
+ apply plugin: "com.elvaliev.k8s_aws_plugin"
+
+ kubernetes {
+    template = 'k8s/kubernetes.yml'
+    image = 'elvaliev/micronaut-quickstart'
+ }
+
+ openshift {
+    template = 'k8s/openshift.yml'
+    image = 'elvaliev/micronaut-quickstart'
+ }
+```
+> Note: If you named template as "openshift" and "kubernetes" in project root - don't need to specify templates. Plugin will recognize it.
+
+> Note: Plugin support command options, it's not necessary to specify extensions "openshift" and "kubernetes"
+
+### Deploy tasks
+For deploying to Openshift by using extensions: `./gradlew openshiftDeploy` or by using command line options:
+```batch
+./gradlew openshiftDeploy --template=k8s/openshift.yml --image=elvaliev/micronaut-quickstart
+```
+For deploying to Kubernetes by using extensions: `./gradlew kubernetesDeploy` or by using command line options:
+```batch
+./gradlew kubernetesDeploy --template=k8s/kubernetes.yml --image=elvaliev/micronaut-quickstart
+```
