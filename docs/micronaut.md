@@ -102,7 +102,8 @@ In your project create file: `src/main/appengine/app.yaml`:
 ```yaml
 runtime: java11
 instance_class: F4
-entrypoint: 'java -agentpath:/opt/cdbg/cdbg_java_agent.so=--log_dir=/var/log -jar <JAR_FILE_NAME>.jar'
+entrypoint: 'java -agentpath:/opt/cdbg/cdbg_java_agent.so=--log_dir=/var/log
+                  -jar <JAR_FILE_NAME>.jar'
 ```
 
 ### Deploy task
@@ -118,6 +119,8 @@ gcloud app browse
 &nbsp;
 
 ## Kubernetes/OpenShift 🚩
+Prerequisites: `OC/Kubernetes Client` - already logged in.
+
 For deploying to Kubernetes/OpenShift used my plugin [`k8s_aws_plugin`](https://github.com/ElinaValieva/micronaut-quickstarts/tree/master/kotlin-k8s-aws-plugin),
 which used templates or file configuration list (supported `.json` and `.yaml` formats) and image-streams for deployment.
 ### Template setup
@@ -187,6 +190,8 @@ For deploying to Kubernetes by using extensions: `./gradlew kubernetesDeploy` or
 &nbsp;
 
 ## AWS Lambda 🚩
+Prerequisites: `AWS Client` - already logged in.
+
 ### Dependency
 Setup aws dependency in project `build.gradle`:
 
