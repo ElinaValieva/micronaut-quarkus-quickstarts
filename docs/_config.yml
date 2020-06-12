@@ -2,7 +2,7 @@
 title:               QuickStart
 tagline:             'Deployment for Hello-World App by Gradle tasks'
 description:         '<p/><p/>'
-url:                 https://elinavalieva.github.io/micronaut-quickstarts
+url:                 https://elinavalieva.github.io/micronaut-quarkus-quickstarts
 baseurl:             ''
 paginate:            5
 permalink:           pretty
