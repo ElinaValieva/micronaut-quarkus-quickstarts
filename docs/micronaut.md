@@ -6,9 +6,11 @@ title: Micronaut
 **Micronaut** *positioned as a modern, JVM-based, full-stack framework for building modular, easily testable microservice and serverless applications.
 Let's create a simple "hello-world" app with multiple platform deployment(OpenShift/Kubernetes/Amazon/Google Cloud Platform) by using simple gradle tasks.*
 
+*Source: [micronaut project](https://github.com/ElinaValieva/micronaut-quickstarts/tree/master/micronaut)*
+
 &nbsp;
 
-## Application
+## Application ‍🚀
 Create your first Kotlin application:
 ```batch
 mn create-app com.micronaut.complete --lang=kotlin
@@ -29,7 +31,28 @@ class GreetingController {
 
 &nbsp;
 
-## Google Cloud Platform (GCP)
+## Docker support 🐳
+Setup `jib` for docker support in project `build.gradle`:
+```groovy
+plugins {
+    id 'com.google.cloud.tools.jib' version '2.3.0'
+}
+
+jib {
+    to {
+        image = 'elvaliev/micronaut-quickstart'
+        auth {
+            username = DOCKERHUB_USERNAME
+            password = DOCKERHUB_PASSWORD
+        }
+    }
+}
+```
+Run in command line: `.gradlew jib`
+
+&nbsp;
+
+## Google Cloud Platform (GCP) 🚩
 Prerequisites: Google Cloud Platform account.
 
 ### Create project
@@ -94,9 +117,9 @@ gcloud app browse
 
 &nbsp;
 
-## Kubernetes/OpenShift
+## Kubernetes/OpenShift 🚩
 For deploying to Kubernetes/OpenShift used my plugin [`k8s_aws_plugin`](https://github.com/ElinaValieva/micronaut-quickstarts/tree/master/kotlin-k8s-aws-plugin),
-which used templates or file configuration list (supported `.json` and `.yaml` formats).
+which used templates or file configuration list (supported `.json` and `.yaml` formats) and image-streams for deployment.
 ### Template setup
 Define in your project file for OpenShift and/or Kubernetes deployment as a "configuration list":
 ```yaml
@@ -160,3 +183,80 @@ For deploying to Kubernetes by using extensions: `./gradlew kubernetesDeploy` or
 ```batch
 ./gradlew kubernetesDeploy --template=k8s/kubernetes.yml --image=elvaliev/micronaut-quickstart
 ```
+
+&nbsp;
+
+## AWS Lambda 🚩
+### Dependency
+Setup aws dependency in project `build.gradle`:
+
+```groovy
+dependencies {
+    implementation "io.micronaut:micronaut-function-aws"
+}
+```
+### Serveless function
+For deploying as AWS Lambda setup serveless-function:
+```kotlin
+@FunctionBean("hello-micronaut")
+class HelloKotlinFunction : Supplier<String> {
+
+    override fun get(): String {
+        return "Hello from Serverless Micronaut Functions!"
+    }
+}
+```
+### Plugin setup
+For deploying serverless functions used [gradle aws plugin](https://github.com/classmethod/gradle-aws-plugin). Define `AWS_ROLE` and `AWS_REGION` in `gradle.properties`.
+
+Setup plugin configuration in project `build.gradle`:
+```groovy
+import com.amazonaws.services.lambda.model.InvocationType
+import com.amazonaws.services.lambda.model.Runtime
+import jp.classmethod.aws.gradle.lambda.*
+
+
+plugins {
+    ...
+    id "jp.classmethod.aws.lambda" version "0.41"
+}
+apply plugin: 'jp.classmethod.aws.lambda'
+
+aws {
+    profileName = "default"
+    region = AWS_REGION
+}
+
+lambda {
+    region = AWS_REGION
+}
+
+task zip(type: Zip) {
+    from "function/"
+    destinationDir file("build")
+}
+
+mainClassName = "io.micronaut.function.executor.FunctionApplication"
+
+task deploy(type: AWSLambdaMigrateFunctionTask, dependsOn: shadowJar) {
+    functionName = "hello-micronaut"
+    handler = "io.micronaut.function.aws.MicronautRequestStreamHandler"
+    role = AWS_ROLE
+    runtime = Runtime.Java8
+    zipFile = shadowJar.archivePath
+    memorySize = 256
+    timeout = 60
+}
+
+task invoke(type: AWSLambdaInvokeTask) {
+    functionName = "hello-micronaut"
+    invocationType = InvocationType.RequestResponse
+    payload = ''
+    doLast {
+        println "Lambda function result: " + new String(invokeResult.payload.array())
+    }
+}
+```
+### Deploy tasks
+Deploy to AWS Lambda: `./gradlew deploy` and invoke Lambda: `./gradlew invoke`.
+
