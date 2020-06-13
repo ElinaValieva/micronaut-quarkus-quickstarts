@@ -3,6 +3,7 @@
 ![Update Docker Hub Description](https://github.com/ElinaValieva/micronaut-quickstarts/workflows/Update%20Docker%20Hub%20Description/badge.svg?branch=master)
 [![Gradle Plugin Portal](https://img.shields.io/maven-metadata/v/https/plugins.gradle.org/m2/com/google/cloud/tools/jib/com.google.cloud.tools.jib.gradle.plugin/maven-metadata.xml.svg?colorB=007ec6&label=gradle)](https://plugins.gradle.org/plugin/com.google.cloud.tools.jib)
 [![Kotlin](https://img.shields.io/badge/Kotlin-1.3.72-orange.svg) ](https://kotlinlang.org/)
+[![Micronaut](https://img.shields.io/badge/micronaut-2.0.0-yellow.svg)](https://micronaut.io/)
 > Simple `hello-world` project with different platform deployment using gradle tasks: 
 
 ```bash

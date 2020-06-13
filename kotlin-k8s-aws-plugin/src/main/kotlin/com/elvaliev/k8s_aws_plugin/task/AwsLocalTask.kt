@@ -19,7 +19,7 @@ open class AwsLocalTask : DeployDefaultTask() {
     @Input
     @Optional
     @Option(option = "template", description = "Custom template file, as default used template.yaml")
-    var samTemplate: String = "template.yaml"
+    var samTemplate: String = "template"
 
     @TaskAction
     fun run() {

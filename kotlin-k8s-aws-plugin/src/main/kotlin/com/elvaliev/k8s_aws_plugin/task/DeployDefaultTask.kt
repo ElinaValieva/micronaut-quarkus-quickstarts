@@ -30,14 +30,42 @@ open class DeployDefaultTask : DefaultTask() {
         process.destroy()
     }
 
-    fun retrieveFile(filePath: String): String {
-        if (!project.file(filePath).exists()) {
-            if (project.file("build\\kubernetes\\$filePath").exists()) {
-                return "build/kubernetes/$filePath"
+    fun retrieveFile(
+        fileName: String,
+        extensions: ArrayList<String> = arrayListOf("yaml", "yml"),
+        rootDir: String = "build"
+    ): String {
+        if (project.file(fileName).exists())
+            return fileName
+
+        var foundedFile = project.rootDir.listFiles()?.let {
+            it.find { file ->
+                file.name.contains(fileName) && extensions.contains(file.extension)
             }
-            throw GradleException("File doesn't exist by provided path: $filePath")
         }
-        return filePath
+
+        if (foundedFile != null && foundedFile.exists())
+            return foundedFile.name
+
+        foundedFile = project.file(rootDir).listFiles()?.let {
+            it.find { file -> file.name.contains(fileName) && extensions.contains(file.extension) }
+        }
+
+        if (foundedFile == null)
+            throw GradleException("File doesn't exist by provided path: $fileName")
+
+        return "$rootDir/${foundedFile.name}"
+    }
+
+    fun findJar(rootDir: String = "build/libs", extension: String = "jar"): String {
+        if (project.file("$rootDir/${project.name}-${project.version}.$extension").exists())
+            return "$rootDir/${project.name}-${project.version}.$extension"
+
+        val jarFile = project.file(rootDir)
+            .listFiles()?.let {
+                it.find { file -> file.extension == extension && file.nameWithoutExtension.startsWith(project.name) }
+            }
+        return "$rootDir/${jarFile?.name}"
     }
 
     fun executeCommand(command: String, continueOnError: Boolean = false) {
@@ -111,8 +139,7 @@ open class DeployDefaultTask : DefaultTask() {
     }
 
     fun getKubernetesTemplate(template: String): KubernetesParser.KubernetesTemplate? {
-        val templatePath = retrieveFile(template)
         val openShiftParser = KubernetesParser()
-        return openShiftParser.parseTemplate("${project.projectDir.path}\\$templatePath")
+        return openShiftParser.parseTemplate(template)
     }
 }

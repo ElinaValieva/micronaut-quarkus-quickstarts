@@ -161,7 +161,7 @@ Setup plugin configuration in project `build.gradle`:
 ```groovy
 plugins {
                     ...
-    id "com.elvaliev.k8s_aws_plugin" version "1.0.3"
+    id "com.elvaliev.k8s_aws_plugin" version "1.0.4"
 }
 
  apply plugin: "com.elvaliev.k8s_aws_plugin"
@@ -212,13 +212,13 @@ Setup plugin configuration in project `build.gradle`:
 ```groovy
 plugins {
                     ...
-    id "com.elvaliev.k8s_aws_plugin" version "1.0.3"
+    id "com.elvaliev.k8s_aws_plugin" version "1.0.4"
 }
 
 apply plugin: "com.elvaliev.k8s_aws_plugin"
 
 aws {
-        template = file("${project.buildDir}\\sam.jvm.yaml")
+        template = "sam.jvm.yaml"
         bucket = AWS_BUCKET_NAME
         stack = AWS_STACK_NAME
 }
@@ -228,7 +228,7 @@ aws {
 ### Deploy tasks
 Simulate Amazon Lambda Deployment: `./gradlew awsLocal` or by using command-line options:
 ```batch
-./gradlew awsLocal --template=file("${project.buildDir}\\sam.jvm.yaml")
+./gradlew awsLocal --template="sam.jvm.yaml")
 ```
 
 This will start a docker container that mimics Amazon’s Lambda’s deployment environment.
@@ -236,7 +236,7 @@ Once the environment started you can invoke the example lambda in your browser b
 
 Deploy to AWS: `./gradlew awsPackage` or by using command-line options:
 ```batch
-./gradlew awsPackage --template=file("${project.buildDir}\\sam.jvm.yaml") \
+./gradlew awsPackage --template="sam.jvm.yaml" \
                      --bucket=AWS_BUCKET_NAME \
                      --stack=AWS_STACK_NAME
 ```

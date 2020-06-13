@@ -6,5 +6,4 @@ open class KubernetesPluginExtension {
 
     var image: String? = null
 
-    var jar: String? = null
 }

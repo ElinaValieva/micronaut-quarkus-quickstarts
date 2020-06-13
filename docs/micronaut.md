@@ -158,7 +158,7 @@ Setup plugin configuration in project `build.gradle`:
 ```groovy
 plugins {
                     ...
-    id "com.elvaliev.k8s_aws_plugin" version "1.0.3"
+    id "com.elvaliev.k8s_aws_plugin" version "1.0.4"
 }
 
  apply plugin: "com.elvaliev.k8s_aws_plugin"
@@ -180,11 +180,11 @@ plugins {
 ### Deploy tasks
 For deploying to Openshift by using extensions: `./gradlew openshiftDeploy` or by using command line options:
 ```batch
-./gradlew openshiftDeploy --template=k8s/openshift.yml --image=elvaliev/micronaut-quickstart
+./gradlew openshiftDeploy --template="k8s/openshift.yml" --image="elvaliev/micronaut-quickstart"
 ```
 For deploying to Kubernetes by using extensions: `./gradlew kubernetesDeploy` or by using command line options:
 ```batch
-./gradlew kubernetesDeploy --template=k8s/kubernetes.yml --image=elvaliev/micronaut-quickstart
+./gradlew kubernetesDeploy --template="k8s/kubernetes.yml" --image="elvaliev/micronaut-quickstart"
 ```
 
 &nbsp;
