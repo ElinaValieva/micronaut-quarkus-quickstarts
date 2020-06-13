@@ -12,7 +12,7 @@ open class KubernetesTask : DeployDefaultTask() {
     @Input
     @Optional
     @Option(option = "template", description = "Custom template file, as default used kubernetes.yaml")
-    var templatePath: String = "kubernetes.yaml"
+    var templatePath: String = "kubernetes"
 
     @Input
     @Optional
@@ -23,7 +23,10 @@ open class KubernetesTask : DeployDefaultTask() {
     @TaskAction
     fun run() {
         val extension = project.extensions.findByName(Kubernetes) as? KubernetesPluginExtension
-        templatePath = retrieveFile(parseValue(extension?.template, templatePath, "template"))
+        templatePath = retrieveFile(
+            parseValue(extension?.template, templatePath, "template"),
+            rootDir = "build/kubernetes"
+        )
         dockerImage = parseValue(extension?.image, dockerImage, "image")
         checkForClient(Client.kubectl)
         val kubernetesTemplate = getKubernetesTemplate(templatePath)

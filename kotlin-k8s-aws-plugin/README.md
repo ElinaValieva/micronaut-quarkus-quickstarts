@@ -1,11 +1,13 @@
 ## Gradle Plugin to Deploying application on Kubernetes/OpenShift/Aws Lambda
 ![Java CI with Gradle](https://github.com/ElinaValieva/micronaut-quickstarts/workflows/Java%20CI%20with%20Gradle/badge.svg)
-[![K*S_AWS_Plugin](https://img.shields.io/badge/gradle%20plugin-1.0.3-blue.svg)](https://plugins.gradle.org/plugin/com.elvaliev.k8s_aws_plugin)
+[![K8S_AWS_Plugin](https://img.shields.io/badge/gradle%20plugin-1.0.4-blue.svg)](https://plugins.gradle.org/plugin/com.elvaliev.k8s_aws_plugin)
 [![Kotlin](https://img.shields.io/badge/Kotlin-1.3.72-orange.svg) ](https://kotlinlang.org/)
 
 > From `1.0.3` plugin support command options and plugin extensions. 
 
 > From `1.0.3` plugin support creation and build deployment for application by using templates(as a template or element listing) for Kubernetes and OpenShift using one common command. 
+
+> From `1.0.4` plugin support file searching in your project root dir and build dir
 
 ## Prerequisites :exclamation:
 - `OC` - for deploying to OpenShift
@@ -17,7 +19,7 @@
 Groovy using the plugins DSL:
 ```groovy
 plugins {
-  id "com.elvaliev.k8s_aws_plugin" version "1.0.3"
+  id "com.elvaliev.k8s_aws_plugin" version "1.0.4"
 }
 ```
 
@@ -30,7 +32,7 @@ buildscript {
     }
   }
   dependencies {
-    classpath "gradle.plugin.com.elvaliev:k8s_aws_plugin:1.0.3"
+    classpath "gradle.plugin.com.elvaliev:k8s_aws_plugin:1.0.4"
   }
 }
 
@@ -41,7 +43,7 @@ apply plugin: "com.elvaliev.k8s_aws_plugin"
 
 |Extension & Options|Description|
 |--|--|
-|`template`|*optional* - path to your kubernetes `yaml` template or configurations file. As default plugin used file with name `kubernetes.yaml` from your project directory or `build/kubernetes` dicrectory. For overriding purposes - define your template in the project root.|
+|`template`|*optional* - path to your kubernetes `y*ml` template or configurations file. As default plugin used file with name `kubernetes.yml` from your project directory or `build/kubernetes` dicrectory. For overriding purposes - define your template in the project root.|
 |`image`|docker registry reference with format `<docker_registry>/<user_name>/<image>:<tag>`|
 
 #### Using extensions:
@@ -62,9 +64,8 @@ Execute gradle task: **`./gradlew kubernetesDeploy --template=k8s/kubernetes.yml
 
 |Extension & Options|Description|
 |--|--|
-|`template`|*optional* - path to your openshift `yaml` template or configurations file. As default plugin used file with name `openshift.yaml` from your project directory or `build/kubernetes` dicrectory. For overriding purposes - define your template in the project root.|
+|`template`|*optional* - path to your openshift `yml` template or configurations file. As default plugin used file with name `openshift.yml` from your project directory or `build/kubernetes` dicrectory. For overriding purposes - define your template in the project root.|
 |`image`|docker registry reference with format `<docker_registry>/<user_name>/<image>:<tag>`|
-|`jar`|*optional* - path to your jar. As default used path from `libs`|
 
 #### Using extensions:
 Configure openshift extension in your `gradle.build`:
@@ -84,7 +85,7 @@ Execute gradle task: **`./gradlew openshiftDeploy --template=k8s/kubernetes.yml 
 
 |Extension Parameters or Command Options|Description|
 |--|--|
-|`template`|*optional* - path to your template. As default plugin used file with name `template.yaml` from your project directory. For overriden perpose - define your template in project root.|
+|`template`|*optional* - path to your template. As default plugin used file with name `template.yml` from your project directory. For overriden perpose - define your template in project root.|
 |`bucket`|bucket name|
 |`stack`|stack name|
 
@@ -92,7 +93,7 @@ Execute gradle task: **`./gradlew openshiftDeploy --template=k8s/kubernetes.yml 
 Configure aws extension in your `gradle.build`:
 ```groovy
 aws {
-    template = "build\\sam.jvm.yaml"
+    template = "sam.jvm.yaml"
     bucket = AWS_BUCKET_NAME
     stack = AWS_STACK_NAME
 }
@@ -104,11 +105,11 @@ This will start a docker container that mimics Amazon’s Lambda’s deployment 
 Package your lambda: **`./gradlew awsPackage`**
 
 #### Using command options:
-Start your lambda: **`./gradlew awsLocal --template=build/sam.jvm.yaml`**
+Start your lambda: **`./gradlew awsLocal --template=sam.jvm.yaml`**
 
 Package your lambda: 
 ```
-./gradlew awsPackage --template=build/sam.jvm.yaml --bucket = AWS_BUCKET_NAME --stack = AWS_STACK_NAME
+./gradlew awsPackage --template=sam.jvm.yaml --bucket = AWS_BUCKET_NAME --stack = AWS_STACK_NAME
 ```
 
 This plugin runs [sam commands](https://quarkus.io/guides/amazon-lambda-http) to simulating and deploying Lambda.
