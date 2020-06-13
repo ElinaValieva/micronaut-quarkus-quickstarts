@@ -12,7 +12,7 @@ plugins {
     id 'java'
     id 'io.quarkus' version "${quarkusPluginVersion}"
     id 'org.jetbrains.kotlin.jvm' version "${kotlinVersion}"
-    id "com.elvaliev.k8s_aws_plugin" version "1.0.3"
+    id "com.elvaliev.k8s_aws_plugin" version "1.0.4"
 }
 
 repositories {
@@ -101,7 +101,7 @@ openshift {
 
 if (project.hasProperty("enableAws") && project.property("enableAws") == "true") {
     aws {
-        template = file("${project.buildDir}\\sam.jvm.yaml")
+        template = "sam.jvm.yaml"
         bucket = AWS_BUCKET_NAME
         stack = AWS_STACK_NAME
     }
