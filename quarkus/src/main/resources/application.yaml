@@ -9,6 +9,7 @@ quarkus:
     name: quarkus-quickstart
     tag: latest
     registry: docker.io
-    username: username
+    username: elvaliev
     password: password
-    push: true
+    push: false
+    build: true

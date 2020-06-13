@@ -16,14 +16,23 @@ jobs:
           java-version: 1.8
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
-      - name: Test for command line
-        run: ./gradlew pluginTest
       - name: Test with Gradle
         run: ./gradlew test
-      - name: Jib
+      - name: Docker run for micronaut
         if: github.ref == 'refs/heads/master'
         env:
           DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
           DOCKERHUB_PASSWORD: ${{ secrets.DOCKERHUB_PASSWORD }}
           DOCKERHUB_REPOSITORY: elvaliev/micronaut-quickstart
-        run: ./gradlew jib --image=$DOCKERHUB_REPOSITORY -PDOCKERHUB_USERNAME=$DOCKERHUB_USERNAME -PDOCKERHUB_PASSWORD=$DOCKERHUB_PASSWORD
+        run: ./gradlew :micronaut:jib --image=$DOCKERHUB_REPOSITORY -PDOCKERHUB_USERNAME=$DOCKERHUB_USERNAME -PDOCKERHUB_PASSWORD=$DOCKERHUB_PASSWORD
+      - name: Docker run for quarkus
+        if: github.ref == 'refs/heads/master'
+        env:
+          DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+          DOCKERHUB_PASSWORD: ${{ secrets.DOCKERHUB_PASSWORD }}
+          DOCKERHUB_REPOSITORY: elvaliev/quarkus-quickstart
+        run: |
+          ./gradlew :quarkus:quarkusBuild
+          docker login -u $DOCKERHUB_USERNAME -p $DOCKERHUB_PASSWORD
+          docker tag runner/quarkus-quickstart $DOCKERHUB_REPOSITORY
+          docker push $DOCKERHUB_REPOSITORY
