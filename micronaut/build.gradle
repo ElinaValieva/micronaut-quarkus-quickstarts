@@ -5,7 +5,7 @@ import jp.classmethod.aws.gradle.lambda.*
 buildscript {
     repositories {
         jcenter()
-        mavenLocal()
+        mavenCentral()
     }
 
     dependencies {
