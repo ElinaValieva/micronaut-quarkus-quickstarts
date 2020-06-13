@@ -43,7 +43,7 @@ apply plugin: "com.elvaliev.k8s_aws_plugin"
 
 |Extension & Options|Description|
 |--|--|
-|`template`|*optional* - path to your kubernetes `y*ml` template or configurations file. As default plugin used file with name `kubernetes.yml` from your project directory or `build/kubernetes` dicrectory. For overriding purposes - define your template in the project root.|
+|`template`|*optional* - path to your kubernetes `yml`/`json` template or configurations file. As default plugin used file with name `kubernetes.yml` from your project directory or `build/kubernetes` dicrectory. For overriding purposes - define your template in the project root.|
 |`image`|docker registry reference with format `<docker_registry>/<user_name>/<image>:<tag>`|
 
 #### Using extensions:
@@ -64,7 +64,7 @@ Execute gradle task: **`./gradlew kubernetesDeploy --template=k8s/kubernetes.yml
 
 |Extension & Options|Description|
 |--|--|
-|`template`|*optional* - path to your openshift `yml` template or configurations file. As default plugin used file with name `openshift.yml` from your project directory or `build/kubernetes` dicrectory. For overriding purposes - define your template in the project root.|
+|`template`|*optional* - path to your openshift `yml`/`json` template or configurations file. As default plugin used file with name `openshift.yml` from your project directory or `build/kubernetes` dicrectory. For overriding purposes - define your template in the project root.|
 |`image`|docker registry reference with format `<docker_registry>/<user_name>/<image>:<tag>`|
 
 #### Using extensions:

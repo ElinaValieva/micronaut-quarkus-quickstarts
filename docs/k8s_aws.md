@@ -20,7 +20,7 @@ title: K8S AWS Plugin
 Groovy using the plugins DSL:
 ```groovy
 plugins {
-  id "com.elvaliev.k8s_aws_plugin" version "1.0.3"
+  id "com.elvaliev.k8s_aws_plugin" version "1.0.4"
 }
 ```
 
@@ -33,7 +33,7 @@ buildscript {
     }
   }
   dependencies {
-    classpath "gradle.plugin.com.elvaliev:k8s_aws_plugin:1.0.3"
+    classpath "gradle.plugin.com.elvaliev:k8s_aws_plugin:1.0.4"
   }
 }
 
@@ -44,7 +44,7 @@ apply plugin: "com.elvaliev.k8s_aws_plugin"
 
 |Extension & Options|Description|
 |--|--|
-|`template`|*optional* - path to your kubernetes `yaml` template or configurations file. As default plugin used file with name `kubernetes.yaml` from your project directory or `build/kubernetes` dicrectory. For overriding purposes - define your template in the project root.|
+|`template`|*optional* - path to your kubernetes `yml`/`json` template or configurations file. As default plugin used file with name `kubernetes.yml` from your project directory or `build/kubernetes` dicrectory. For overriding purposes - define your template in the project root.|
 |`image`|docker registry reference with format `<docker_registry>/<user_name>/<image>:<tag>`|
 
 **Using extensions:**
@@ -69,7 +69,7 @@ Execute gradle task: `./gradlew kubernetesDeploy`
 
 |Extension & Options|Description|
 |--|--|
-|`template`|*optional* - path to your openshift `yaml` template or configurations file. As default plugin used file with name `openshift.yaml` from your project directory or `build/kubernetes` dicrectory. For overriding purposes - define your template in the project root.|
+|`template`|*optional* - path to your openshift `yml`/`json` template or configurations file. As default plugin used file with name `openshift.yml` from your project directory or `build/kubernetes` dicrectory. For overriding purposes - define your template in the project root.|
 |`image`|docker registry reference with format `<docker_registry>/<user_name>/<image>:<tag>`|
 |`jar`|*optional* - path to your jar. As default used path from `libs`|
 
@@ -95,7 +95,7 @@ Execute gradle task: `./gradlew openshiftDeploy`
 
 |Extension Parameters or Command Options|Description|
 |--|--|
-|`template`|*optional* - path to your template. As default plugin used file with name `template.yaml` from your project directory. For overriden perpose - define your template in project root.|
+|`template`|*optional* - path to your template. As default plugin used file with name `template.yml` from your project directory. For overriden perpose - define your template in project root.|
 |`bucket`|bucket name|
 |`stack`|stack name|
 
@@ -104,7 +104,7 @@ Execute gradle task: `./gradlew openshiftDeploy`
 Configure aws extension in your `gradle.build`:
 ```groovy
 aws {
-    template = "build\\sam.jvm.yaml"
+    template = "sam.jvm.yaml"
     bucket = AWS_BUCKET_NAME
     stack = AWS_STACK_NAME
 }
@@ -120,12 +120,12 @@ Package your lambda: `./gradlew awsPackage`
 
 Start your lambda:
 ```batch
-./gradlew awsLocal --template=build/sam.jvm.yaml
+./gradlew awsLocal --template="sam.jvm.yaml"
 ```
 
 Package your lambda:
 ```batch
-./gradlew awsPackage --template="build/sam.jvm.yaml" \
+./gradlew awsPackage --template="sam.jvm.yaml" \
                      --bucket=AWS_BUCKET_NAME \
                      --stack=AWS_STACK_NAME
 ```
