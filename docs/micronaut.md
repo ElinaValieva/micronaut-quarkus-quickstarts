@@ -200,8 +200,8 @@ dependencies {
     implementation "io.micronaut:micronaut-function-aws"
 }
 ```
-### Serveless function
-For deploying as AWS Lambda setup serveless-function:
+### Serverless function
+For deploying as AWS Lambda setup serverless-function:
 ```kotlin
 @FunctionBean("hello-micronaut")
 class HelloKotlinFunction : Supplier<String> {
