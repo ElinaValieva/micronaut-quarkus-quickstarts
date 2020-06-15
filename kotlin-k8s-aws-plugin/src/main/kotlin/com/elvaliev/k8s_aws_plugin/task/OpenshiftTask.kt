@@ -32,7 +32,7 @@ open class OpenshiftTask : DeployDefaultTask() {
         val kubernetesTemplate = getKubernetesTemplate(templatePath)
         val app = parseValue(kubernetesTemplate?.application, project.name, "application")
         val imageStream = kubernetesTemplate?.imageStreamApplication
-        when (checkDeployments("oc get  deploymentConfig $app")) {
+        when (checkCommandExecution("oc get  deploymentConfig $app")) {
             true -> buildDeployment(app, imageStream, jar)
             false -> kubernetesTemplate?.isTemplate?.let { createDeployment(app, imageStream, it, jar) }
         }
@@ -49,7 +49,8 @@ open class OpenshiftTask : DeployDefaultTask() {
         else
             executeCommand("oc create -f $templatePath", continueOnError = true)
         buildDeployment(app, imageStream, jar)
-        executeCommand("oc expose svc/$app", continueOnError = true)
+        if (checkCommandExecution("oc get route $app"))
+            executeCommand("oc expose svc/$app", continueOnError = true)
         executeCommand("oc get route $app -o jsonpath --template={.spec.host}")
     }
 

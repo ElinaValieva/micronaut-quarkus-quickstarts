@@ -33,7 +33,7 @@ open class KubernetesTask : DeployDefaultTask() {
         val app = parseValue(kubernetesTemplate?.application, project.name, "application")
         val port = parseValue(kubernetesTemplate?.port, "8080", "port")
 
-        when (checkDeployments("kubectl get deployment $app")) {
+        when (checkCommandExecution("kubectl get deployment $app")) {
             true -> buildDeployment(app)
             false -> createDeployment(app, port)
         }

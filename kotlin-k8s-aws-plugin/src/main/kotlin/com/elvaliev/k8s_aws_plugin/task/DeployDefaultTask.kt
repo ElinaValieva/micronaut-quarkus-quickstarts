@@ -83,7 +83,7 @@ open class DeployDefaultTask : DefaultTask() {
         }
     }
 
-    fun checkDeployments(command: String): Boolean {
+    fun checkCommandExecution(command: String): Boolean {
         val process = ProcessBuilder(createCommandLineArgs(command))
             .directory(project.projectDir).start()
 
