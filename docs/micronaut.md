@@ -4,7 +4,7 @@ title: Micronaut
 ---
 
 **Micronaut** *positioned as a modern, JVM-based, full-stack framework for building modular, easily testable microservice and serverless applications.
-Let's create a simple "hello-world" app with multiple platform deployment(OpenShift/Kubernetes/Amazon/Google Cloud Platform) by using simple gradle tasks.*
+Let's create a simple "hello-world" app with multiple platform deployment(OpenShift/Kubernetes/Amazon/Google Cloud Platform) by using simple Gradle tasks.*
 
 *Source: [micronaut project](https://github.com/ElinaValieva/micronaut-quickstarts/tree/master/micronaut)*
 
@@ -48,15 +48,15 @@ jib {
     }
 }
 ```
-Run in command line: `.gradlew jib`
+Run in the command line: `./gradlew jib`
 
 &nbsp;
 
 ## Google Cloud Platform (GCP) 🚩
 Prerequisites: Google Cloud Platform account.
 
-### Create project
-Create project directly in your GCP or by using command-line tool:
+### Create a project
+Create a project directly in your GCP or by using a command-line tool:
 
 ```batch
 gcloud projects create PROJECT_ID --set-as-default
@@ -173,7 +173,7 @@ plugins {
     image = 'elvaliev/micronaut-quickstart'
  }
 ```
-> Note: If you named template as "openshift" and "kubernetes" in project root - don't need to specify templates. Plugin will recognize it.
+> Note: If you named template as "openshift" and "kubernetes" in project root - don't need to specify templates. The plugin will recognize it.
 
 > Note: Plugin support command options, it's not necessary to specify extensions "openshift" and "kubernetes"
 
